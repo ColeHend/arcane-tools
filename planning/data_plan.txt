@@ -1,0 +1,60 @@
+﻿Features
+    • Video/Text Chat 									(A2)
+    • Home Page											(A1)	
+    • Character Creator 									(A1)
+    • Spell Tracker									     (A1)
+    • Party Info									(B2)
+    • Create Hostable Campaigns characters can join 			(A2)
+    • Create Home-brew Accessible when joined a certain campaign (A2)
+    • Game Screen 									(B1)
+        ◦ New webcam source 							(B)
+        ◦ Image 									(B)
+        ◦ Battle Map 						      (C)
+Tech to use
+    • Socket.io
+    • express
+    • bcrypt
+    • SQL
+    • Axios
+    . dotenv
+    • D&D Open API
+Database Plan
+	Tables
+    • Characters
+        ◦ character_id
+        ◦ user_id
+        ◦ character_name
+        ◦ stats
+        ◦ class
+        ◦ subclass
+        ◦ level
+        ◦ feat/stat choices
+        ◦ spells known
+        ◦ abilities known 
+        ◦ campaign currently in
+        ◦ Items
+    • Users
+        ◦ user_id
+        ◦ username
+        ◦ password
+    • Campaigns
+        ◦ campaign_id
+        ◦ user_id
+        ◦ Title
+        ◦ Description
+        ◦ players joined
+    • Home-brew
+        ◦ homebrew_id
+        ◦ user_id
+        ◦ category
+        ◦ name
+        ◦ description
+          
+Relationships
+    • One-to-One
+    • One-to-Many
+        ◦ users =>(homebrew,characters,campaigns)
+    • Many-to-Many
+        ◦ homebrew =>(characters,campaigns)
+        ◦ characters =>(campaigns,homebrew)
+    • campaigns =>(characters,homebrew)

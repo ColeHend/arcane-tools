@@ -1,0 +1,7 @@
+ border-image-slice: 19 25 27 22;
+border-image-width: 20px 20px 20px 20px;
+border-image-outset: 0px 0px 0px 0px;
+border-image-repeat: stretch stretch;
+border-image-source: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeXXjgeC5EZ-1cbw_0bdmSyQ9YwZ410sge1w&usqp=CAU");
+border-style: solid;
+
