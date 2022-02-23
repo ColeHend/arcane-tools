@@ -1,0 +1,59 @@
+body{
+    margin: 0px;
+    padding: 0px;
+    height: 100vh;
+}
+#header{
+    /* height: 20vh; */
+    /* padding: 0px 0px 10px 0px; */
+    border: 1px solid #000;
+    border-radius: 10;
+    box-shadow: 1px 1px 4px #000;
+}
+#banner{
+    font-size: 1.5em;
+    text-align: center;
+    margin: 10px;
+}
+#loginBar{
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+}
+#buttonBar{
+    display: flex;
+    justify-content: space-around;
+}
+#loginBtn{
+    flex-grow: 1;
+}
+#registerBtn{
+    flex-grow: 1;
+}
+button{
+    border: 0px none;
+    border-radius: 5;
+    margin: 10px;
+    background: none;
+}
+button:hover{
+    cursor: pointer;
+}
+#modal{
+    display: none;
+}
+
+#posts{/* post container */
+    display: flex;
+    width: 100vw;
+}
+
+.post{
+    flex: 1 40%;
+    margin: 4%;
+}
+.postTitle{
+    font-size: 1.3rem;
+    font-weight: 500;
+    margin: 15px;
+}
