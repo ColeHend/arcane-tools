@@ -1,3 +1,5 @@
+const url = window.location.href.replace(window.location.pathname,'')
+console.log(url);
 var socket = io();
 //-------Check If On Mobile---------------
 var isMobile = false; 
@@ -13,7 +15,6 @@ const banner = document.getElementById('banner');
 const loginBar = document.getElementById('loginBar');
 const buttonBar = document.getElementById('buttonBar');
 const postsDiv = document.getElementById('posts');
-
 let testPost = {
     title:"Test",
     message:"This is a total test"
@@ -47,7 +48,7 @@ function createPost(postObj) {
     titlePost.innerText = postObj.title
     titlePost.classList.toggle('postTitle',true)
     let messPost = document.createElement('p')
-    messPost.innerText = postObj.message
+    messPost.innerHTML = postObj.message
     messPost.classList.toggle('postMessage',true)
     post.appendChild(titlePost)
     post.appendChild(messPost)

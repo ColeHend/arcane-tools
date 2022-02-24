@@ -17,13 +17,14 @@ app.use(cors())
 app.use(express.static(__dirname + "/client"))
 
 
-const userNamespace = io.of('/')
-const adminNamespace = io.of('/admin')
 // -------------endpoints------
 app.get('/',homePage)
 app.get('/api/character/:charID',getCharacter)
 
 // ----------socketpoints-------
+const userNamespace = io.of('/')
+const adminNamespace = io.of('/admin')
+
 adminNamespace.use((socket,next)=>{
     // check rights
     next();
@@ -38,6 +39,7 @@ adminNamespace.on('connection',(socket)=>{
     console.log('An admin connected!');
     socket.on("disconnect", socketCon.disconAdmin);
 })
+
 server.listen(SERVER_PORT,()=>{
     console.log(`Server listening on ${SERVER_PORT}`);
 })
