@@ -1,45 +1,90 @@
-require('dotenv').config()
-const express = require('express');
-const cors = require('cors')
-const app = express()
-const http = require('http')
-
-const server = http.createServer(app)
-const SERVER_PORT = process.env.PORT
-const {Server} = require('socket.io');
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const app = express();
+const http = require("http");
+const path = require("path");
+const server = http.createServer(app);
+const {PORT,SECRET} = process.env;
+const { Server } = require("socket.io");
 const io = new Server(server);
 
-const {getCharacter, homePage} = require('./controllers/control.js')
-const socketCon = require('./controllers/sockets')
+const passport = require("passport");
+const session = require("express-session");
+const LocalStrategy = require("passport-local").Strategy;
 
-app.use(express.json())
-app.use(cors())
-app.use(express.static(__dirname + "/client"))
+const {
+  getCharacter,
+  myStrategy,
+  addCharacter,
+  updateCharacter,
+  addHomebrew,
+  registerUser,
+  userLogin,
+  deSerial,
+  authenticationMiddleware
+} = require("./controllers/control.js");
+passport.authenticationMiddleware = authenticationMiddleware
 
+app.use(express.json());
+app.use(cors());
+app.use(express.static(path.join(__dirname, "../client")));
+
+//-------------------------------------------------------------
+let origin = process.env.HOSTNAME || 'http://localhost:4444'
+app.use(
+  session({
+    secret: SECRET,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+
+passport.use(new LocalStrategy(myStrategy));
 
 // -------------endpoints------
-app.get('/',homePage)
-app.get('/api/character/:charID',getCharacter)
+passport.serializeUser((user, done) => {
+    done(null, user.user_id);
+});
+  
+passport.deserializeUser(deSerial);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.post('/profile',passport.authenticationMiddleware(),(req,res)=>{
+    console.log(req);
+    res.sendFile(path.join(__dirname,'../client/profile.html'))
+})
+
+
+app.get("/api/character/:charID",passport.authenticationMiddleware(), getCharacter);
+
+app.post("/api/login", passport.authenticate("local"),(req, res)=>{
+    res.json(req.user)
+});
 
 // ----------socketpoints-------
-const userNamespace = io.of('/')
-const adminNamespace = io.of('/admin')
+const socketCon = require("./controllers/sockets");
+const userNamespace = io.of("/");
+const adminNamespace = io.of("/admin");
 
-adminNamespace.use((socket,next)=>{
-    // check rights
-    next();
-})
+adminNamespace.use((socket, next) => {
+  // check rights
+  next();
+});
 
-userNamespace.on('connection',(socket)=>{
-    console.log("A user connected!");
-    socket.on("disconnect", socketCon.disconUser);
-  })
+userNamespace.on("connection", (socket) => {
+  console.log("A user connected!");
+  socket.on("disconnect", socketCon.disconUser);
+});
 
-adminNamespace.on('connection',(socket)=>{
-    console.log('An admin connected!');
-    socket.on("disconnect", socketCon.disconAdmin);
-})
+adminNamespace.on("connection", (socket) => {
+  console.log("An admin connected!");
+  socket.on("disconnect", socketCon.disconAdmin);
+});
 
-server.listen(SERVER_PORT,()=>{
-    console.log(`Server listening on ${SERVER_PORT}`);
-})
+server.listen(PORT, () => {
+  console.log(`Server listening on ${PORT}`);
+});

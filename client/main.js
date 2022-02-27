@@ -15,6 +15,7 @@ const banner = document.getElementById('banner');
 const loginBar = document.getElementById('loginBar');
 const buttonBar = document.getElementById('buttonBar');
 const postsDiv = document.getElementById('posts');
+const modal = document.getElementById('modal');
 let testPost = {
     title:"Test",
     message:"This is a total test"
@@ -29,15 +30,84 @@ function mobileSetup() {
     }
 }mobileSetup()
 
+function loginForm(e) {
+    let type = e.target.value;
+
+    modal.innerHTML = '';
+    let h3 = document.createElement('h3');
+    h3.textContent = type
+
+    let theForm = document.createElement('form');
+    theForm.setAttribute('method','post');
+    theForm.setAttribute('action',`/api/${type}`)
+    let username = document.createElement('input');
+    username.setAttribute('type','text');
+    username.setAttribute('name','username');
+    username.setAttribute('id','username')
+    username.setAttribute('placeholder','username..')
+    let password = document.createElement('input');
+    password.setAttribute('type','password');
+    password.setAttribute('name','password');
+    password.setAttribute('id','password')
+    password.setAttribute('placeholder','password..')
+    let submit = document.createElement('button')
+    submit.setAttribute('type','submit')
+    submit.setAttribute('value','Submit')
+    submit.textContent = 'Submit'
+    theForm.appendChild(h3)
+    theForm.appendChild(username)
+    theForm.appendChild(password)
+    theForm.appendChild(submit)
+    if (type==='login') {
+        theForm.addEventListener('submit',login)
+    } else {
+        
+    }
+    modal.append(theForm)
+    modal.classList.toggle('modalNone',false)
+    modal.classList.toggle('modalShow',true)
+    theForm.classList.toggle('modalLogin',true)
+}
+
+function login(e) {
+    e.preventDefault()
+    let sendObj = {
+        username: document.getElementById('username').value,
+        password: document.getElementById('password').value
+    }
+    axios.post('/api/login',sendObj)
+    .then(res=>{
+        res.sendStatus(200);
+    })
+    .catch(err=>console.log(err))
+}
+
+function register(e) {
+    e.preventDefault()
+    let sendObj = {
+        username: document.getElementById('username').value,
+        password: document.getElementById('password').value
+    }
+    axios.post('/api/register',sendObj)
+    .then(res=>{
+
+    })
+    .catch(err=>console.log(err))
+}
+
 function notLoggedIN() {
     let loginBtn = document.createElement('button')
+    loginBtn.value = 'login'
     loginBtn.innerText = 'Login'
     loginBtn.setAttribute('id','loginBtn')
     let registerBtn = document.createElement('button')
+    registerBtn.value = 'register'
     registerBtn.textContent = 'Register'
     registerBtn.setAttribute('id','registerBtn')
     loginBar.append(loginBtn)
     loginBar.appendChild(registerBtn)
+    loginBtn.addEventListener('click',loginForm)
+    registerBtn.addEventListener('click',loginForm)
 } notLoggedIN()
 
 function createPost(postObj) {
@@ -55,3 +125,6 @@ function createPost(postObj) {
     postsDiv.prepend(post)
     
 }createPost(testPost);createPost(testPost);
+
+const loginBtn = document.getElementById('loginBtn');
+
