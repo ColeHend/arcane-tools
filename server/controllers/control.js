@@ -36,8 +36,8 @@ function registerUser(req, res) {
         replacements: [username, passHash],
       })
       .then((dbRes) => {
-        console.log("response: ", dbRes);
-        res.status(200).send("registered");
+        console.log("response: ", );
+        res.status(200).send(dbRes);
       })
       .catch((err) => console.log(err));
   } else {
@@ -45,19 +45,32 @@ function registerUser(req, res) {
   }
 }
 
+function profileInfo(req,res) {
+  let {user} = req;
+  console.log(user);
+  sequelize.query('SELECT * FROM users WHERE user_id=? INNER JOIN characters WHERE users.user_id=characters.user_id INNER JOIN homebrew WHERE users.user_id=characters.user_id;',{replacements:[user.user_id]})
+  .then(dbRes=>{
+    console.log(dbRes);
+    res.status(200).send(dbRes[0])
+  })
+
+  .catch(err=>console.log(err))
+}
+
 function userLogin(req, res) {
   //get
   let { username, password } = req.body;
 
   sequelize
-    .query(`SELECT * FROM users WHERE username=?;`, [username])
+    .query(`SELECT * FROM users WHERE username=?;`, {replacements:[username]})
     .then((dbRes) => {
       const exists = bcrypt.compareSync(password, dbRes[0].password);
       if (exists) {
-        //sends response to front if passwords match
+        res.status(200).redirect('/profile')
       }
     })
     .catch((err) => console.log(err));
+  res.status(200).send('Not registered')
 }
 function deSerial(id, cb) {
   sequelize
@@ -67,9 +80,10 @@ function deSerial(id, cb) {
     })
     .catch((err) => console.log(err));
 }
+
 function myStrategy(username, password, done) {
   sequelize
-    .query(`SELECT * FROM users WHERE username=?;`, [username])
+    .query(`SELECT * FROM users WHERE username=?;`, {replacements:[username]})
     .then((dbRes) => {
       const exists = bcrypt.compareSync(password, dbRes.password);
       if (exists) {
@@ -83,11 +97,11 @@ function myStrategy(username, password, done) {
       }
     })
     .catch((err) => console.log(err));
-  if (res) {
-    cb(null);
-  } else {
-    cb(null, false);
-  }
+    // if (dbRes == true) {
+    //   cb(null);
+    // } else {
+    //   cb(null, false);
+    // }
 }
 //---------------------------------------------------
 function getCharacter(req, res) {
@@ -130,7 +144,7 @@ function addCharacter(req, res) {
     .query(
       `INSERT INTO characters (user_id,character_name,character_stats,character_subclass,character_level,character_curr_campaign,character_items)
     VALUES(?,?,?,?,?,?,?,?);`,
-      [userID, cName, cStats, cClass, cSubclass, cLevel, cCurrCamp, cItems]
+      {replacements:[userID, cName, cStats, cClass, cSubclass, cLevel, cCurrCamp, cItems]}
     )
     .then((dbRes) => {})
     .catch((err) => console.log(err));
@@ -166,4 +180,5 @@ module.exports = {
   deSerial,
   authenticationMiddleware,
   daSequel,
+  profileInfo
 };

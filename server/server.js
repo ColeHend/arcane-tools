@@ -9,6 +9,9 @@ const { PORT, SECRET } = process.env;
 const { Server } = require("socket.io");
 const io = new Server(server);
 
+const sass = require('sass');
+const result = sass.compile(path.join(__dirname,'../client/style.scss'));
+
 const passport = require("passport");
 const session = require("express-session");
 var SequelizeStore = require("connect-session-sequelize")(session.Store);
@@ -24,7 +27,8 @@ const {
   registerUser,
   userLogin,
   deSerial,
-  authenticationMiddleware,
+  profileInfo,
+  authenticationMiddleware
 } = require("./controllers/control.js");
 passport.authenticationMiddleware = authenticationMiddleware;
 
@@ -59,7 +63,6 @@ passport.deserializeUser(deSerial);
 
 app.use(passport.initialize());
 app.use(passport.session());
-
 app.post("/profile", passport.authenticationMiddleware(), (req, res) => {
   console.log(req);
   res.sendFile(path.join(__dirname, "../client/profile.html"));
@@ -70,7 +73,14 @@ app.get(
   passport.authenticationMiddleware(),
   getCharacter
 );
-
+app.get('/api/auth',(req,res)=>{
+    if (req.isAuthenticated()) {
+        res.status(200).send(true)
+    } else {
+        res.status(200).send(false)
+    }
+})
+app.get('/api/profileInfo',passport.authenticationMiddleware(),profileInfo)
 app.post("/api/login", passport.authenticate("local"), (req, res) => {
   res.json(req.user);
 });
