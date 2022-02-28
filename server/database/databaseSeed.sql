@@ -1,11 +1,11 @@
-DROP TABLE users IF EXISTS;
-DROP TABLE campaigns IF EXISTS;
-DROP TABLE homebrew IF EXISTS;
-DROP TABLE characters IF EXISTS;
+DROP TABLE IF EXISTS homebrew;
+DROP TABLE IF EXISTS characters;
+DROP TABLE IF EXISTS campaigns;
+DROP TABLE IF EXISTS users ;
 
 CREATE TABLE users(
     user_id SERIAL PRIMARY KEY,
-    username VARCHAR(50),
+    username UNIQUE VARCHAR(50),
     user_password TEXT,
     user_isAdmin BOOLEAN DEFAULT false
 );

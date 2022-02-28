@@ -11,26 +11,38 @@ const sequelize = new Sequelize(CONNECTION_STRING, {
   },
 });
 //---------------------------------------------
+const daSequel = () => sequelize;
 
+//----------------------------------------
 const bcrypt = require("bcryptjs");
 //find user needs to return an user obj??
 
-
 function registerUser(req, res) {
   //post
-  let { username, password } = req.body;
-  let salt = bcrypt.genSaltSync(10); //
-  const passHash = bcrypt.hashSync(password, salt);
-
-  sequelize
-    .query(`INSERT INTO users(username,password) VALUES(?,?) IF NOT EXIST;`, [
-      username,
-      passHash,
-    ])
-    .then((dbRes) => {
-        let res = {}
-    })
-    .catch((err) => console.log(err));
+  const checkCharacters = (string) => {
+    const format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+    format.test(string) ? true : false;
+  };
+  let { username, password, passwordConfirm } = req.body;
+  if (
+    password === passwordConfirm &&
+    checkCharacters(password) &&
+    passwordConfirm.length >= 8
+  ) {
+    let salt = bcrypt.genSaltSync(10); //
+    const passHash = bcrypt.hashSync(password, salt);
+    sequelize
+      .query(`INSERT INTO users(username,user_password) VALUES(?,?);`, {
+        replacements: [username, passHash],
+      })
+      .then((dbRes) => {
+        console.log("response: ", dbRes);
+        res.status(200).send("registered");
+      })
+      .catch((err) => console.log(err));
+  } else {
+      res.status(400).send('something was wrong')
+  }
 }
 
 function userLogin(req, res) {
@@ -41,39 +53,41 @@ function userLogin(req, res) {
     .query(`SELECT * FROM users WHERE username=?;`, [username])
     .then((dbRes) => {
       const exists = bcrypt.compareSync(password, dbRes[0].password);
-      if (exists) { //sends response to front if passwords match
-          
+      if (exists) {
+        //sends response to front if passwords match
       }
     })
     .catch((err) => console.log(err));
 }
 function deSerial(id, cb) {
-    sequelize
+  sequelize
     .query(`SELECT * FROM users WHERE user_id=?;`, [id])
-    .then(dbRes => {
-        cb(null, dbRes[0]);
+    .then((dbRes) => {
+      cb(null, dbRes[0]);
     })
     .catch((err) => console.log(err));
-
-  }
+}
 function myStrategy(username, password, done) {
   sequelize
     .query(`SELECT * FROM users WHERE username=?;`, [username])
     .then((dbRes) => {
       const exists = bcrypt.compareSync(password, dbRes.password);
       if (exists) {
-        return done(null, { id: dbRes[0].id, username: dbRes[0].username, type: dbRes[0].isAdmin });
+        return done(null, {
+          id: dbRes[0].id,
+          username: dbRes[0].username,
+          type: dbRes[0].isAdmin,
+        });
       } else if (!exists) {
         return done(null, false);
       }
     })
     .catch((err) => console.log(err));
-    if(res) {
-        cb(null, )
-       } else {
-        cb(null, false)
-       }
-  
+  if (res) {
+    cb(null);
+  } else {
+    cb(null, false);
+  }
 }
 //---------------------------------------------------
 function getCharacter(req, res) {
@@ -133,14 +147,14 @@ function addHomebrew(req, res) {
     .then((dbRes) => {})
     .catch((err) => console.log(err));
 }
-function authenticationMiddleware () {
-    return function (req, res, next) {
-      if (req.isAuthenticated()) {
-        return next()
-      }
-      res.redirect('/')
+function authenticationMiddleware() {
+  return function (req, res, next) {
+    if (req.isAuthenticated()) {
+      return next();
     }
-  }
+    res.redirect("/");
+  };
+}
 module.exports = {
   getCharacter,
   addCharacter,
@@ -150,5 +164,6 @@ module.exports = {
   userLogin,
   myStrategy,
   deSerial,
-  authenticationMiddleware
+  authenticationMiddleware,
+  daSequel,
 };

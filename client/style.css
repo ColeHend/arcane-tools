@@ -64,8 +64,14 @@ button:hover{
     z-index: 5;
     padding: 15px;
 }
+#exitModal:hover{
+    cursor: pointer;
+}
 h3::first-letter {
     text-transform:capitalize;
+}
+.modalLogin button{
+    margin: 10px;
 }
 .modalLogin{
     display: flex;
