@@ -22,6 +22,7 @@ const loginBar = document.getElementById("loginBar");
 const buttonBar = document.getElementById("buttonBar");
 const postsDiv = document.getElementById("posts");
 const modal = document.getElementById("modal");
+
 let testPost = {
   title: "Test",
   message: "This is a total test",
@@ -37,9 +38,22 @@ function mobileSetup() {
     postsDiv.style.justifyContent = "space-around";
   }
 }
-mobileSetup();
 
-
+function init() {
+    mobileSetup();
+    
+    axios.get('/api/auth')
+    .then(res=>{
+        let {data} = res
+        if (data===true) {
+            console.log('logged in!')
+        } else if (data===false){
+            notLoggedIN()
+        } else {
+            console.log(res);
+        }
+    })
+}init()
 
 function loginForm(e) {
   let type = e.target.value;
@@ -97,15 +111,19 @@ function loginForm(e) {
   modal.classList.toggle("modalShow", true);
   theForm.classList.toggle("modalLogin", true);
 }
+
 function closeModal() {
   modal.classList.toggle("modalNone", true);
   modal.classList.toggle("modalShow", false);
 }
+
 function login(e) {
   e.preventDefault();
+  let userN = document.getElementById("username").value
+  let passW = document.getElementById("password").value
   let sendObj = {
-    username: document.getElementById("username").value(),
-    password: document.getElementById("password").value(),
+    username: userN,
+    password: passW,
   };
   axios
     .post("/api/login", sendObj)
@@ -118,8 +136,8 @@ function login(e) {
 function register(e) {
   e.preventDefault();
   let sendObj = {
-    username: document.getElementById("username").value,
-    password: document.getElementById("password").value,
+    username: document.querySelector("#username").value(),
+    password: document.getElementById("password").value(),
   };
   axios
     .post("/api/register", sendObj)
@@ -143,7 +161,6 @@ function notLoggedIN() {
   loginBtn.addEventListener("click", loginForm);
   registerBtn.addEventListener("click", loginForm);
 }
-notLoggedIN();
 
 function createPost(postObj) {
   let post = document.createElement("div");
