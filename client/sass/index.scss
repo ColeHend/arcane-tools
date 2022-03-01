@@ -61,8 +61,9 @@ button:hover {
   background-color: #fff;
   height: auto;
   max-width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 5;
   padding: 15px;
 }
@@ -82,19 +83,4 @@ h3::first-letter {
     margin: 10px;
   }
 }
-#posts {
-  /* post container */
-  display: flex;
-  width: 100vw;
-}
 
-.post {
-  @include normalBorder;
-  flex: 1 40%;
-  margin: 4%;
-  background-color: transparentize($secondary,.25);
-}
-.postTitle {
-  @include fontPost;
-  margin: 15px;
-}

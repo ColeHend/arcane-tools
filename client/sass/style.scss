@@ -1,0 +1,18 @@
+@import 'index';
+
+#posts {
+    /* post container */
+    display: flex;
+    width: 100vw;
+  }
+  
+  .post {
+    @include normalBorder;
+    flex: 1 40%;
+    margin: 4%;
+    background-color: transparentize($secondary,.25);
+  }
+  .postTitle {
+    @include fontPost;
+    margin: 15px;
+  }
