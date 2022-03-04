@@ -10,34 +10,90 @@ const sequelize = new Sequelize(CONNECTION_STRING, {
     },
   },
 });
-//---------------------------------------------
+
 const daSequel = () => sequelize;
-
-//----------------------------------------
 const bcrypt = require("bcryptjs");
-//find user needs to return an user obj??
 
+const checkCharacters = (string) => {
+  const format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+  if (format.test(string)) {
+    return true
+  } else {
+    return false
+  }
+};
+
+//----------Session---------------------
+async function myStrategy(username, password, done) {
+  try {
+    let dbRes = await sequelize.query('SELECT * FROM users WHERE username=?;', {replacements:[username]})
+
+    if (!dbRes[0] || !dbRes[0][0])
+    {
+      return done(null, false);
+    }
+
+    let user = dbRes[0][0]
+
+    let secrtPass = user.user_password;
+
+    const exists = await bcrypt.compare(password, secrtPass);
+    console.log('Correct password?: ',exists);
+    if (exists) {
+      let maybeUser = {
+        id: user.user_id,
+        username: user.username,
+        type: user.user_isAdmin
+      }
+      return done(null, user);
+    } else if (!exists) {
+      return done(null, false);
+    }
+  } catch (error) {
+    console.log(error);
+    return done(null, false);
+  }
+}
+
+function deSerial(id, cb) {
+  id = id.username
+  sequelize
+    .query(`SELECT * FROM users WHERE username=?;`, {replacements:[id]})
+    .then((dbRes) => {
+      cb(null, dbRes[0][0].username);
+    })
+    .catch((err) => console.log(err));
+}
+
+function authenticationMiddleware() {
+  return function (req, res, next) {
+    if (req.isAuthenticated()) {
+      return next();
+    }
+    res.redirect("/");
+  };
+}
+//----------Login-------------------------
 function registerUser(req, res) {
   //post
-  const checkCharacters = (string) => {
-    const format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
-    format.test(string) ? true : false;
-  };
+  
   let { username, password, passwordConfirm } = req.body;
+  let usename = username
+  let specialChar = checkCharacters(password);
+  console.log(password === passwordConfirm,specialChar,passwordConfirm.length>=8);
   if (
     password === passwordConfirm &&
-    checkCharacters(password) &&
     passwordConfirm.length >= 8
   ) {
-    let salt = bcrypt.genSaltSync(10); //
+    const salt = bcrypt.genSaltSync(10); 
     const passHash = bcrypt.hashSync(password, salt);
     sequelize
       .query(`INSERT INTO users(username,user_password) VALUES(?,?);`, {
-        replacements: [username, passHash],
+        replacements: [usename, passHash],
       })
       .then((dbRes) => {
         console.log("response: ", );
-        res.status(200).send(dbRes);
+        res.status(200).send(dbRes[0][0]);
       })
       .catch((err) => console.log(err));
   } else {
@@ -45,26 +101,13 @@ function registerUser(req, res) {
   }
 }
 
-function profileInfo(req,res) {
-  let {user} = req;
-  console.log(user);
-  sequelize.query('SELECT * FROM users WHERE user_id=? INNER JOIN characters WHERE users.user_id=characters.user_id INNER JOIN homebrew WHERE users.user_id=characters.user_id;',{replacements:[user.user_id]})
-  .then(dbRes=>{
-    console.log(dbRes);
-    res.status(200).send(dbRes[0])
-  })
-
-  .catch(err=>console.log(err))
-}
-
 function userLogin(req, res) {
   //get
   let { username, password } = req.body;
-
   sequelize
-    .query(`SELECT * FROM users WHERE username=?;`, {replacements:[username]})
+    .query(`SELECT * FROM users WHERE username=?;`, {replacements:[usename]})
     .then((dbRes) => {
-      const exists = bcrypt.compareSync(password, dbRes[0].password);
+      const exists = bcrypt.compareSync(password, dbRes[0][0].password);
       if (exists) {
         res.status(200).redirect('/profile')
       }
@@ -72,56 +115,38 @@ function userLogin(req, res) {
     .catch((err) => console.log(err));
   res.status(200).send('Not registered')
 }
-function deSerial(id, cb) {
+
+function profileInfo(req,res) {
+  let {username} = req.body;
+  console.log('USER STUFF: ',username);
+  // sequelize.query('SELECT * FROM users WHERE users.username=? JOIN characters WHERE users.user_id=characters.user_id JOIN homebrew WHERE users.user_id=characters.user_id;',{replacements:[username]})
+  // .then(dbRes=>{
+  //   console.log(dbRes);
+  //   res.status(200).send(dbRes[0][0])
+  // })
+  // .catch(err=>console.log(err))
+}
+
+//-----------Character----------------------------
+function getCharacters(req, res) {
+  //get
+  let { username } = req.body;
   sequelize
-    .query(`SELECT * FROM users WHERE user_id=?;`, [id])
-    .then((dbRes) => {
-      cb(null, dbRes[0]);
-    })
+    .query(`SELECT * FROM characters WHERE user_id IN (
+      SELECT user_id FROM users WHERE username=?);`, {replacements:[username]})
+    .then((dbRes) => {res.status(200).send(dbRes)})
     .catch((err) => console.log(err));
 }
 
-function myStrategy(username, password, done) {
-  sequelize
-    .query(`SELECT * FROM users WHERE username=?;`, {replacements:[username]})
-    .then((dbRes) => {
-      const exists = bcrypt.compareSync(password, dbRes.password);
-      if (exists) {
-        return done(null, {
-          id: dbRes[0].id,
-          username: dbRes[0].username,
-          type: dbRes[0].isAdmin,
-        });
-      } else if (!exists) {
-        return done(null, false);
-      }
-    })
-    .catch((err) => console.log(err));
-    // if (dbRes == true) {
-    //   cb(null);
-    // } else {
-    //   cb(null, false);
-    // }
-}
-//---------------------------------------------------
-function getCharacter(req, res) {
-  //get
-  let { charID } = req.params;
-  sequelize
-    .query(`SELECT * FROM characters WHERE character_id=?;`, [charID])
-    .then((dbRes) => {})
-    .catch((err) => console.log(err));
-}
 function updateCharacter(req, res) {
   //put
   let { charID } = req.params;
-  let { userID, cName, cStats, cClass, cSubclass, cLevel, cCurrCamp, cItems } =
-    req.body;
+  let { userID, cName, cStats, cClass, cSubclass, cLevel, cCurrCamp, cItems } = req.body;
   sequelize
     .query(
       `UPDATE characters SET character_name=? AND character_stats=? AND character_subclass=? AND character_level=? AND character_curr_campaign=?
     AND character_items=? WHERE user_id=? AND character_id=?;`,
-      [
+      {replacements:[
         cName,
         cStats,
         cClass,
@@ -130,12 +155,13 @@ function updateCharacter(req, res) {
         cCurrCamp,
         cItems,
         userID,
-        charID,
-      ]
+        charID
+      ]}
     )
     .then((dbRes) => {})
     .catch((err) => console.log(err));
 }
+
 function addCharacter(req, res) {
   //post
   let { userID, cName, cStats, cClass, cSubclass, cLevel, cCurrCamp, cItems } =
@@ -149,6 +175,23 @@ function addCharacter(req, res) {
     .then((dbRes) => {})
     .catch((err) => console.log(err));
 }
+function getCampaigns(req,res) {
+  let {username} = req.body;
+  sequelize
+    .query(`SELECT * FROM campaigns WHERE user_id IN (
+      SELECT user_id FROM users WHERE username=?);`, {replacements:[username]})
+    .then((dbRes) => {res.status(200).send(dbRes)})
+    .catch((err) => console.log(err));
+}
+//----------Homebrew-------------------------
+function getHomebrew(req, res) {
+  let { username } = req.body;
+  sequelize
+    .query(`SELECT * FROM homebrew WHERE user_id IN (
+      SELECT user_id FROM users WHERE username=?);`, {replacements:[username]})
+    .then((dbRes) => {res.status(200).send(dbRes)})
+    .catch((err) => console.log(err));
+}
 function addHomebrew(req, res) {
   //post
   let { userID, category, hName } = req.body;
@@ -156,24 +199,19 @@ function addHomebrew(req, res) {
     .query(
       `INSERT INTO homebrew (user_id,category,homebrew_name)
     VALUES (?,?,?);`,
-      [userID, category, hName]
+      {replacements:[userID, category, hName]}
     )
     .then((dbRes) => {})
     .catch((err) => console.log(err));
 }
-function authenticationMiddleware() {
-  return function (req, res, next) {
-    if (req.isAuthenticated()) {
-      return next();
-    }
-    res.redirect("/");
-  };
-}
+
 module.exports = {
-  getCharacter,
+  getCampaigns,
+  getCharacters,
   addCharacter,
   updateCharacter,
   addHomebrew,
+  getHomebrew,
   registerUser,
   userLogin,
   myStrategy,

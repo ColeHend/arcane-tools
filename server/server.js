@@ -9,38 +9,40 @@ const { PORT, SECRET } = process.env;
 const { Server } = require("socket.io");
 const io = new Server(server);
 
-const sass = require('sass');
-const result = sass.compile(path.join(__dirname,'../client/style.scss'));
-
 const passport = require("passport");
 const session = require("express-session");
 var SequelizeStore = require("connect-session-sequelize")(session.Store);
 const LocalStrategy = require("passport-local").Strategy;
-
+const cookieParser = require("cookie-parser");
 const {
+  getCampaigns,
   daSequel,
-  getCharacter,
+  getCharacters,
   myStrategy,
   addCharacter,
   updateCharacter,
   addHomebrew,
-  registerUser,
   userLogin,
+  registerUser,
   deSerial,
+  getHomebrew,
   profileInfo,
-  authenticationMiddleware
+  authenticationMiddleware,
 } = require("./controllers/control.js");
 passport.authenticationMiddleware = authenticationMiddleware;
 
 app.use(express.json());
-app.use(cors());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "../client")));
-//-------------------------------------------------------------
-let origin = process.env.HOSTNAME || "http://localhost:4444";
-const mySqlStore = new SequelizeStore({
-    db: daSequel(),
-  });
 
+app.use(cookieParser());
+app.use(cors());
+
+//--------------Session----------------------------
+const mySqlStore = new SequelizeStore({
+  db: daSequel()
+});
+const oneDay = 1000 * 60 * 60 * 24;
 app.use(
   session({
     secret: SECRET,
@@ -48,44 +50,57 @@ app.use(
     saveUninitialized: false,
     store: mySqlStore,
     resave: false,
-    proxy: false
+    proxy: false,
+    cookie: { maxAge: oneDay },
   })
 );
-mySqlStore.sync()
+mySqlStore.sync();
 passport.use(new LocalStrategy(myStrategy));
 
-// -------------endpoints------
 passport.serializeUser((user, done) => {
-  done(null, user.user_id);
+  done(null, { id: user.id, username: user.username, type: user.type });
 });
 
 passport.deserializeUser(deSerial);
 
 app.use(passport.initialize());
 app.use(passport.session());
-app.post("/profile", passport.authenticationMiddleware(), (req, res) => {
-  console.log(req);
-  res.sendFile(path.join(__dirname, "../client/profile.html"));
-});
+// ---------Routes-----------------------------
+//-----login-----------
+app.post("/api/register", registerUser);
 
-app.get(
-  "/api/character/:charID",
-  passport.authenticationMiddleware(),
-  getCharacter
-);
-app.get('/api/auth',(req,res)=>{
-    if (req.isAuthenticated()) {
-        res.status(200).send(true)
-    } else {
-        res.status(200).send(false)
-    }
-})
-app.get('/api/profileInfo',passport.authenticationMiddleware(),profileInfo)
-app.post("/api/login", passport.authenticate("local"), (req, res) => {
-  res.json(req.user);
+app.post("/api/login",passport.authenticate("local", {
+    successRedirect: "/profile.html",
+    failureRedirect: "/",
+    failureMessage: true,
+  }));
+
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+  res.redirect("/");
 });
-app.post('/api/register',registerUser)
-// ----------socketpoints-------
+//----auth--
+app.get("/api/auth", (req, res) => {
+  console.log(req.isAuthenticated);
+  if (req.isAuthenticated()) {
+    res.status(200).send(true);
+  } else {
+    res.status(200).send(false);
+  }
+});
+//------character routes-
+app.post("/api/profileInfo/", passport.authenticationMiddleware(), profileInfo);
+
+app.get("/api/characters/",passport.authenticationMiddleware(),
+  getCharacters
+);
+
+app.get('/api/campaigns/',passport.authenticationMiddleware(),getCampaigns)
+
+//-----homebrew routes--
+app.get('/api/homebrew',passport.authenticationMiddleware(),getHomebrew)
+
+// ----------socketpoints--------------------
 const socketCon = require("./controllers/sockets");
 const userNamespace = io.of("/");
 const adminNamespace = io.of("/admin");
@@ -104,6 +119,7 @@ adminNamespace.on("connection", (socket) => {
   console.log("An admin connected!");
   socket.on("disconnect", socketCon.disconAdmin);
 });
+//--------------------
 
 server.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);

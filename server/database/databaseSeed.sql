@@ -12,6 +12,7 @@ CREATE TABLE users(
 CREATE TABLE campaigns(
     campaign_id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(user_id),
+    members VARCHAR(25),
     title VARCHAR(50),
     campaign_desc VARCHAR(5000)
 );
