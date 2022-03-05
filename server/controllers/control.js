@@ -274,20 +274,27 @@ const axios = require("axios");
 const apiLink = "https://www.dnd5eapi.co/api/";
 const link = "https://www.dnd5eapi.co";
 
-async function getDndInfo(str) {
+async function getDndInfo(str,api=false) {
   try {
-    let res;
-    if (str.contains('/api/')) {
-       res = await axios.get(link.concat(str));
-    } else{
-       res = await axios.get(apiLink.concat(str));
+    let res, host; 
+    if (api===false) {
+      host = apiLink.concat(str)
+    } else {
+      host = link.concat(str)
     }
-    return res[0];
+    res = await axios.get(host);
+    
+    return res.data.results;
   } catch (error) {console.log(error);}
 }
-
- function baseCharInfo(req,res) {
-  let races = await getDndInfo("races");
+async function moreInfo(req,res) {
+  let {urlSent} = req.body
+  let theInfo = await getDndInfo(urlSent,true)
+  res.send(theInfo)
+}
+ async function baseCharInfo(req,res) {
+  try {
+    let races = await getDndInfo("races");
   let classes = await getDndInfo("classes");
   let abilityScores = await getDndInfo('ability-scores');
   let skills = await getDndInfo('skills');
@@ -295,7 +302,24 @@ async function getDndInfo(str) {
   let languages = await getDndInfo('languages');
   let alignment = await getDndInfo('alignment');
   let backgrounds = await getDndInfo('backgrounds');
-
+  let traits = await getDndInfo('traits')
+  
+  
+  let info = {
+    races,
+    classes,
+    abilityScores,
+    skills,
+    proficiencies,
+    languages,
+    alignment,
+    backgrounds,
+    traits
+  }
+    console.log(info);
+    res.json(info)
+  } catch (error) {console.log(error);}
+  
   
 }
 /*          
@@ -315,6 +339,7 @@ module.exports = {
   getDndInfo,
   addCharacter,
   updateCharacter,
+  baseCharInfo,
   addHomebrew,
   getHomebrew,
   registerUser,
@@ -324,4 +349,5 @@ module.exports = {
   authenticationMiddleware,
   daSequel,
   profileInfo,
+  moreInfo
 };

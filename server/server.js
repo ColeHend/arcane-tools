@@ -16,10 +16,11 @@ const LocalStrategy = require("passport-local").Strategy;
 const cookieParser = require("cookie-parser");
 const {
   getCampaigns,
+  moreInfo,
   daSequel,
   getCharacters,
   myStrategy,
-  getDndInfo,
+  baseCharInfo,
   addCharacter,
   updateCharacter,
   addHomebrew,
@@ -91,12 +92,14 @@ app.get("/api/auth", (req, res) => {
 });
 //------character routes-
 app.post("/api/profileInfo/", passport.authenticationMiddleware(), profileInfo);
-
+app.get('/api/moreinfo',passport.authenticationMiddleware(),moreInfo)
 app.get("/api/characters/",passport.authenticationMiddleware(),
   getCharacters
 );
 
 app.get('/api/campaigns/',passport.authenticationMiddleware(),getCampaigns)
+
+app.get('/api/baseCharInfo/',passport.authenticationMiddleware(),baseCharInfo)
 
 //-----homebrew routes--
 app.get('/api/homebrew',passport.authenticationMiddleware(),getHomebrew)

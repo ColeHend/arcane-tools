@@ -77,6 +77,7 @@ try {
 function createButtonBar() {
     const addCharBtn = document.createElement('button');
     addCharBtn.textContent = 'Create A Character'
+    addCharBtn.addEventListener('click',()=>window.location.href = './character.html')
     const addCampaignBtn = document.createElement('button');
     addCampaignBtn.textContent = "Add a Campaign"
     const addHomebrewBtn = document.createElement('button');

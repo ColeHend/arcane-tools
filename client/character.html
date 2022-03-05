@@ -5,9 +5,41 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create a Character</title>
-    <link rel="stylesheet" href="charCreate.css">
+    <link rel="stylesheet" href="./css/charCreate.css">
 </head>
 <body>
-    
+    <header>
+        <div id="header">
+            <div id="banner">Archies Arcane Tools</div>
+            <nav>
+                <div id="loginBar"></div>
+                <div id="buttonBar"></div>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <div id="createParent">
+            <div id="chooseName">
+                <input type="text" name="charName" id="charName" placeholder="Enter Character Name...">
+            </div>
+            <div id="chooseRace">
+                <div class="raceInfo"></div>
+                <select name="race" id="raceSelect"></select>
+            </div>
+            <div id="chooseClass">
+                <div class="classInfo"></div>
+                <select name="class" id="classSelect"></select>
+            </div>
+            <div id="chooseBack">
+
+            </div>
+        </div>
+    </main>
+    <footer>
+
+    </footer>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="./modules.js"></script>
+    <script src="./character.js"></script>
 </body>
 </html>
