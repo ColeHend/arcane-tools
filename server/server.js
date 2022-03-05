@@ -19,6 +19,7 @@ const {
   daSequel,
   getCharacters,
   myStrategy,
+  getDndInfo,
   addCharacter,
   updateCharacter,
   addHomebrew,

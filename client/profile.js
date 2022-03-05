@@ -8,16 +8,14 @@ try {
     });
   }
   authy();
-} catch (error) {
-  console.log(error);
-}
+} catch (error) {console.log(error);}
 
 console.log("username: ", username);
 
 loggedIn(username);
 
 const playerContent = document.getElementById("playerContent");
-
+const buttonBar = document.getElementById('buttonBar');
 const playerChars = document.getElementById("characters");
 const charHead = document.getElementById("charHead");
 try {
@@ -75,6 +73,16 @@ try {
 } catch (error) {
   console.log(error);
 }
-function createChar() {
-    
-}
+
+function createButtonBar() {
+    const addCharBtn = document.createElement('button');
+    addCharBtn.textContent = 'Create A Character'
+    const addCampaignBtn = document.createElement('button');
+    addCampaignBtn.textContent = "Add a Campaign"
+    const addHomebrewBtn = document.createElement('button');
+    addHomebrewBtn.textContent = 'Create Homebrew'
+    buttonBar.appendChild(addCharBtn)
+    buttonBar.appendChild(addCampaignBtn)
+    buttonBar.appendChild(addHomebrewBtn)
+
+}createButtonBar()

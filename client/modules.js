@@ -46,6 +46,9 @@ function loggedIn(username) {
     let userBtn = document.createElement("button");
   userBtn.setAttribute("id", "userBtn");
   userBtn.textContent = username;
+  userBtn.addEventListener('click',()=>{
+    window.location.href='./profile.html'
+  })
   loginBar.append(userBtn);
 }
 function closeModal() {

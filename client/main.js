@@ -125,8 +125,6 @@ function register(e) {
     .catch((err) => console.log(err));
 }
 
-
-
 function createPost(postObj) {
   let post = document.createElement("div");
   post.setAttribute("style", "display:flex;flex-direction:column");

@@ -47,7 +47,17 @@ body {
 }
 #buttonBar {
   display: flex;
-  justify-content: space-around;
+  width: 100%;
+  justify-content: space-evenly;
+  background-image: linear-gradient(to right, $primary, $secondary);
+  button {
+    flex-grow: 1;
+    @include fontPost;
+    border: 0px none;
+    margin: 10px;
+    background: none;
+    color: #e6d2a4;
+  }
 }
 button:hover {
   cursor: pointer;
