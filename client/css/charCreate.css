@@ -95,3 +95,19 @@ h3::first-letter {
 .modalLogin button {
   margin: 10px;
 }
+
+#classInfo {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+span {
+  font-weight: 700;
+}
+
+.charSpecs {
+  display: flex;
+  flex-direction: column;
+}

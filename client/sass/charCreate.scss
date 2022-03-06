@@ -1,1 +1,19 @@
-@import 'index';
+@import "index";
+// <span id="hitDie"></span>
+// <span id="proficiencies"></span>
+// <span id="savingThrows"></span>
+// <span id="subclasses"></span>
+// <span id="skills"></span>
+#classInfo{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+span{
+    font-weight: 700;
+}
+.charSpecs{
+    display: flex;
+    flex-direction: column;
+}
