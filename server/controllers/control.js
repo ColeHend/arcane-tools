@@ -1,5 +1,5 @@
 const path = require("path");
-
+let getCharLevelsHasRan = false;
 const { CONNECTION_STRING } = process.env;
 const Sequelize = require("sequelize");
 const sequelize = new Sequelize(CONNECTION_STRING, {
@@ -10,9 +10,24 @@ const sequelize = new Sequelize(CONNECTION_STRING, {
     },
   },
 });
-
+const quickData = {};
 const daSequel = () => sequelize;
 const bcrypt = require("bcryptjs");
+
+const allClasses = [
+  "sorcerer",
+  "fighter",
+  "barbarian",
+  "ranger",
+  "monk",
+  "warlock",
+  "paladin",
+  "wizard",
+  "rogue",
+  "druid",
+  "bard",
+  "cleric",
+];
 
 const checkCharacters = (string) => {
   const format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
@@ -235,6 +250,152 @@ function addHomebrew(req, res) {
     .then((dbRes) => {})
     .catch((err) => console.log(err));
 }
+
+const axios = require("axios");
+const apiLink = "https://www.dnd5eapi.co/api/";
+const link = "https://www.dnd5eapi.co";
+function quickSave(host, obj) {
+  // for (let key in quickData) {
+  // }
+  quickData[host] = obj;
+  console.log("Saved!");
+  console.log(host, "data!");
+}
+function quickLoad(host) {
+  for (const key in quickData) {
+    if (host === key) {
+      console.log(key,"Loaded!");
+      return quickData[key];
+    }
+  }
+  console.log("Not Loaded!");
+  return false;
+}
+async function getDndInfo(str, api = false) {
+  try {
+    let res, host;
+    if (api === false) {
+      host = apiLink.concat(str);
+    } else {
+      host = link.concat(str);
+    }
+    if (quickLoad(host) === false) {
+      let res = await axios.get(host);
+      if (res.data.hasOwnProperty('results')) {
+        res = res.data.results 
+      } else {
+        res = res.data
+      }
+      quickSave(host, res);
+      return quickLoad(host)
+    } else {
+      console.log('quickloaded: ',JSON.stringify(quickLoad(host)));
+      return quickLoad(host)
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+async function moreInfo(req, res) {
+  try {
+    let { urlSent } = req.query;
+    urlSent = urlSent.replaceAll('@7@','/')
+    if (urlSent !== undefined) {
+      if (quickLoad(urlSent) === false) {
+        let theInfo = await getDndInfo(urlSent);
+        quickSave(urlSent, theInfo);
+        res.send(theInfo);
+      } else {
+        res.send(quickLoad(urlSent));
+      }
+    } else {
+      res.status(404).send("No Class/URL Sent!");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getCharLevels(req, res) {
+  let { charClass } = req.query;
+  console.log('charClass',charClass,req.query);
+
+  if (getCharLevelsHasRan === false) {
+    for (let i = 0; i < allClasses.length; i++) {
+      let element = allClasses[i];
+      let link = `classes/${element}/levels/`;
+      await getDndInfo(link);
+    }
+    getCharLevelsHasRan = true;
+  }
+  let link = `classes/${charClass}/levels`;
+  if (charClass !== undefined) {
+    let lvlRes = await getDndInfo(link);
+    console.log("charClass", charClass,lvlRes);
+    res.status(200).send(lvlRes);
+  } else {
+    res.status(404).send("No Class Sent");
+  }
+}
+
+async function baseCharInfo(req, res) {
+  try {
+    let races = await getDndInfo("races");
+    let classes = await getDndInfo("classes");
+    let abilityScores = await getDndInfo("ability-scores");
+    let skills = await getDndInfo("skills");
+    let proficiencies = await getDndInfo("proficiencies");
+    let languages = await getDndInfo("languages");
+    // let alignment = await getDndInfo("alignment");
+    let backgrounds = await getDndInfo("backgrounds");
+    let traits = await getDndInfo("traits");
+
+    let info = {
+      races,
+      classes,
+      abilityScores,
+      skills,
+      proficiencies,
+      languages,
+      // alignment,
+      backgrounds,
+      traits,
+    };
+    res.send(info);
+  } catch (error) {
+    console.log(error);
+  }
+}
+/*          
+
+-- Name 
+-- Race
+-- Class
+-background
+
+-- Stat Choice
+
+*/
+
+module.exports = {
+  getCampaigns,
+  getCharacters,
+  getDndInfo,
+  addCharacter,
+  updateCharacter,
+  baseCharInfo,
+  addHomebrew,
+  getHomebrew,
+  registerUser,
+  userLogin,
+  myStrategy,
+  deSerial,
+  getCharLevels,
+  authenticationMiddleware,
+  daSequel,
+  profileInfo,
+  moreInfo,
+};
 /* 
   ability-scores
   skills
@@ -270,84 +431,3 @@ function addHomebrew(req, res) {
   -subraces
    traits
   */
-const axios = require("axios");
-const apiLink = "https://www.dnd5eapi.co/api/";
-const link = "https://www.dnd5eapi.co";
-
-async function getDndInfo(str,api=false) {
-  try {
-    let res, host; 
-    if (api===false) {
-      host = apiLink.concat(str)
-    } else {
-      host = link.concat(str)
-    }
-    res = await axios.get(host);
-    
-    return res.data.results;
-  } catch (error) {console.log(error);}
-}
-async function moreInfo(req,res) {
-  let {urlSent} = req.body
-  let theInfo = await getDndInfo(urlSent,true)
-  res.send(theInfo)
-}
- async function baseCharInfo(req,res) {
-  try {
-    let races = await getDndInfo("races");
-  let classes = await getDndInfo("classes");
-  let abilityScores = await getDndInfo('ability-scores');
-  let skills = await getDndInfo('skills');
-  let proficiencies = await getDndInfo('proficiencies');
-  let languages = await getDndInfo('languages');
-  let alignment = await getDndInfo('alignment');
-  let backgrounds = await getDndInfo('backgrounds');
-  let traits = await getDndInfo('traits')
-  
-  
-  let info = {
-    races,
-    classes,
-    abilityScores,
-    skills,
-    proficiencies,
-    languages,
-    alignment,
-    backgrounds,
-    traits
-  }
-    console.log(info);
-    res.json(info)
-  } catch (error) {console.log(error);}
-  
-  
-}
-/*          
-
--- Name 
--- Race
--- Class
--background
-
--- Stat Choice
-
-*/
-
-module.exports = {
-  getCampaigns,
-  getCharacters,
-  getDndInfo,
-  addCharacter,
-  updateCharacter,
-  baseCharInfo,
-  addHomebrew,
-  getHomebrew,
-  registerUser,
-  userLogin,
-  myStrategy,
-  deSerial,
-  authenticationMiddleware,
-  daSequel,
-  profileInfo,
-  moreInfo
-};

@@ -103,6 +103,30 @@ h3::first-letter {
   flex-wrap: wrap;
 }
 
+#characterLevel {
+  width: 50px;
+}
+
+table {
+  border: 1px solid #000;
+  box-shadow: 1px 1px 4px #000;
+}
+
+tr {
+  border: 1px solid #000;
+  box-shadow: 1px 1px 4px #000;
+  height: auto;
+}
+
+th {
+  font-size: 75%;
+}
+
+td {
+  text-align: center;
+  height: auto;
+}
+
 span {
   font-weight: 700;
 }

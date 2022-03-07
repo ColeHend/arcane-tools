@@ -1,55 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Create a Character</title>
-    <link rel="stylesheet" href="./css/charCreate.css">
-</head>
-<body>
+    <link rel="stylesheet" href="./css/charCreate.css" />
+  </head>
+  <body>
     <header>
-        <div id="header">
-            <div id="banner">Archies Arcane Tools</div>
-            <nav>
-                <div id="loginBar"></div>
-                <div id="buttonBar"></div>
-            </nav>
-        </div>
+      <div id="header">
+        <div id="banner">Archies Arcane Tools</div>
+        <nav>
+          <div id="loginBar"></div>
+          <div id="buttonBar"></div>
+        </nav>
+      </div>
     </header>
     <main>
-        <div id="createParent">
-            <div id="chooseName">
-                <input type="text" name="charName" id="charName" placeholder="Enter Character Name...">
-            </div>
-            <div id="chooseRace">
-                <div id="raceInfo"></div>
-                <select name="race" id="raceSelect"></select>
-            </div>
-            <div id="chooseClass">
-                <select name="class" id="classSelect"></select>
-                <div id="classInfo">
-                    <p id="hitDie"><span class="">Hit Die:</span></p>
-                    <p id="proficiencies"><span class="charSpecs">Proficiencies</span></p>
-                    <p id="savingThrows"><span class="charSpecs">Saving Throws</span></p>
-                    <p id="subclasses"><span class="charSpecs">Subclasses</span></p>
-                    <p id="skills"><span class="charSpecs">Skills</span></p>
-                    <p id="startingEquip">
-                        <span class="charSpecs">Starting Equipment</span>
-                        <select name="startEquipment" id="startEquipment"></select>
-                    </p>
+      <div id="createParent">
+        <div id="chooseName">
+          <input
+            type="text"
+            name="charName"
+            id="charName"
+            placeholder="Enter Character Name..."
+          />
+        </div>
+        <div id="charLevel">
+          <span>Level: </span>
+          <!-- <form action="/api/getCharLevels/" method="get"> -->
+          <input
+            type="number"
+            name="urlSent"
+            id="characterLevel"
+            min="1"
+            max="20"
+            value="1"
+          />
+          <!-- </form> -->
+        </div>
+        <div id="chooseRace">
+            <select name="race" id="raceSelect"></select>
+            <div id="raceInfo">
+                <div>
+                    <p id="raceSize"></p>
+                    <div id="sizeDesc"></div>
                 </div>
-            </div>
-            <div id="chooseBack">
-
+                <div id="raceLang"></div>
+                <div id="raceSpeed"></div>
+                <div id="raceStartProf"></div>
+                <div id="traits"></div>
+                <div id="subRaces"></div>
             </div>
         </div>
+        <div id="chooseClass">
+          <select name="class" id="classSelect"></select>
+          <div id="classInfo">
+            <p id="hitDie"><span class="">Hit Die:</span></p>
+            <p id="proficiencies">
+              <span class="charSpecs">Proficiencies</span>
+            </p>
+            <p id="savingThrows">
+              <span class="charSpecs">Saving Throws</span>
+            </p>
+            <p id="subclasses"><span class="charSpecs">Subclasses</span></p>
+            <p id="skills"><span class="charSpecs">Skills</span></p>
+            <p id="startingEquip">
+              <span class="charSpecs">Starting Equipment</span>
+            </p>
+            <table>
+                
+              <thead>
+                <tr id="charTableHead"></tr>
+              </thead>
+              <tbody id="charTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div id="chooseSkills"></div>
+        <div id="chooseBack">
+            <select name="backSelect" id="backSelect"></select>
+            <div id="backInfo">
+                <div id="bonds"></div>
+                <div id="flaws"></div>
+                <div id="ideals"></div>
+                <div id="languageOptions"></div>
+                <div id="personalityTraits"></div>
+                <div id="startingEquipment"></div>
+                <div id="backProficiencies"></div>
+            </div>
+        </div>
+      </div>
     </main>
-    <footer>
-
-    </footer>
+    <footer></footer>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="./modules.js"></script>
     <script src="./character.js"></script>
-</body>
+  </body>
 </html>

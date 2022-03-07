@@ -22,6 +22,7 @@ const {
   myStrategy,
   baseCharInfo,
   addCharacter,
+  getCharLevels,
   updateCharacter,
   addHomebrew,
   userLogin,
@@ -100,7 +101,7 @@ app.get("/api/characters/",passport.authenticationMiddleware(),
 app.get('/api/campaigns/',passport.authenticationMiddleware(),getCampaigns)
 
 app.get('/api/baseCharInfo/',passport.authenticationMiddleware(),baseCharInfo)
-
+app.get('/api/getCharLevels/',passport.authenticationMiddleware(),getCharLevels)
 //-----homebrew routes--
 app.get('/api/homebrew',passport.authenticationMiddleware(),getHomebrew)
 

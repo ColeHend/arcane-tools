@@ -4,16 +4,41 @@
 // <span id="savingThrows"></span>
 // <span id="subclasses"></span>
 // <span id="skills"></span>
-#classInfo{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    flex-wrap: wrap;
+#classInfo {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap;
 }
-span{
-    font-weight: 700;
+#characterLevel{
+    width: 50px;
 }
-.charSpecs{
-    display: flex;
-    flex-direction: column;
+table {
+  @include normalBorder;
+//   max-width: 100vw;
+}
+tr {
+  @include normalBorder;
+  height: auto;
+}
+// thead{
+//     height: fit-content;
+// }
+th{
+    // @include normalBorder;
+//   height: fit-content;
+    font-size: 75%
+}
+td{
+    // @include normalBorder;
+    text-align: center;
+    height: auto;
+}
+
+span {
+  font-weight: 700;
+}
+.charSpecs {
+  display: flex;
+  flex-direction: column;
 }
