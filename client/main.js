@@ -9,8 +9,8 @@ const postsDiv = document.getElementById("posts");
 const modal = document.getElementById("modal");
 
 let testPost = {
-  title: "Test",
-  message: "This is a total test",
+  title: "Welcome to Archies Arcane Tools!",
+  message: "An excellent website to easily create a character for D&D 5E!",
 };
 
 function init() {
@@ -103,7 +103,7 @@ function login(e) {
   axios
     .post("/api/login", sendObj)
     .then((res) => {
-      window.location.href='./profile.html'
+      window.location.href='/profile.html'
       
     })
     .catch((err) => console.log(err));
@@ -139,7 +139,6 @@ function createPost(postObj) {
   post.appendChild(messPost);
   postsDiv.prepend(post);
 }
-createPost(testPost);
 createPost(testPost);
 
 const loginBtn = document.getElementById("loginBtn");

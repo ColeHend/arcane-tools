@@ -97,7 +97,7 @@ app.get('/api/moreinfo',passport.authenticationMiddleware(),moreInfo)
 app.get("/api/characters/",passport.authenticationMiddleware(),
   getCharacters
 );
-
+app.post('/api/addChar',passport.authenticationMiddleware(),addCharacter)
 app.get('/api/campaigns/',passport.authenticationMiddleware(),getCampaigns)
 
 app.get('/api/baseCharInfo/',passport.authenticationMiddleware(),baseCharInfo)
@@ -105,25 +105,6 @@ app.get('/api/getCharLevels/',passport.authenticationMiddleware(),getCharLevels)
 //-----homebrew routes--
 app.get('/api/homebrew',passport.authenticationMiddleware(),getHomebrew)
 
-// ----------socketpoints--------------------
-const socketCon = require("./controllers/sockets");
-const userNamespace = io.of("/");
-const adminNamespace = io.of("/admin");
-
-adminNamespace.use((socket, next) => {
-  // check rights
-  next();
-});
-
-userNamespace.on("connection", (socket) => {
-  console.log("A user connected!");
-  socket.on("disconnect", socketCon.disconUser);
-});
-
-adminNamespace.on("connection", (socket) => {
-  console.log("An admin connected!");
-  socket.on("disconnect", socketCon.disconAdmin);
-});
 //--------------------
 
 server.listen(PORT, () => {

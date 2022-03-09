@@ -19,7 +19,8 @@
     </header>
     <main>
       <div id="createParent">
-        <div id="chooseName">
+          <input type="button" id="lastView" value="Previous"><input type="button" value="Next" id="nextView">
+        <div id="chooseNameView">
           <input
             type="text"
             name="charName"
@@ -27,7 +28,7 @@
             placeholder="Enter Character Name..."
           />
         </div>
-        <div id="charLevel">
+        <div class="hidden" id="charLevel">
           <span>Level: </span>
           <!-- <form action="/api/getCharLevels/" method="get"> -->
           <input
@@ -40,7 +41,7 @@
           />
           <!-- </form> -->
         </div>
-        <div id="chooseRace">
+        <div class="hidden" id="chooseRace">
             <select name="race" id="raceSelect"></select>
             <div id="raceInfo">
                 <div>
@@ -54,7 +55,7 @@
                 <div id="subRaces"></div>
             </div>
         </div>
-        <div id="chooseClass">
+        <div class="hidden" id="chooseClass">
           <select name="class" id="classSelect"></select>
           <div id="classInfo">
             <p id="hitDie"><span class="">Hit Die:</span></p>
@@ -64,22 +65,30 @@
             <p id="savingThrows">
               <span class="charSpecs">Saving Throws</span>
             </p>
-            <p id="subclasses"><span class="charSpecs">Subclasses</span></p>
-            <p id="skills"><span class="charSpecs">Skills</span></p>
+            <p id="subclasses">
+                <span class="charSpecs">Subclasses</span>
+                <select name="subclassSelect" id="subclassSelect"></select>
+            </p>
+            <div id="chooseSkills"></div>
             <p id="startingEquip">
               <span class="charSpecs">Starting Equipment</span>
             </p>
-            <table>
-                
-              <thead>
-                <tr id="charTableHead"></tr>
-              </thead>
-              <tbody id="charTableBody"></tbody>
-            </table>
+            <div id="levelData">
+                <div name="currLevel" id="currLevel">
+                    <span>Level: </span>
+                </div>
+                <div name="profBonus" id="profBonus">
+                    <span>PB: </span>
+                </div>
+                <div name="features" id="features">
+                    <span>Features: </span>
+                </div>
+                <div id="otherLevelData"></div>
+            </div>
           </div>
         </div>
-        <div id="chooseSkills"></div>
-        <div id="chooseBack">
+       
+        <div class="hidden" id="chooseBack">
             <select name="backSelect" id="backSelect"></select>
             <div id="backInfo">
                 <div id="bonds"></div>
@@ -91,6 +100,7 @@
                 <div id="backProficiencies"></div>
             </div>
         </div>
+        <input class="hidden"  type="submit" value="Submit" id="submitChar">
       </div>
     </main>
     <footer></footer>

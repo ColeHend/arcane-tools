@@ -44,12 +44,19 @@ function notLoggedIN() {
 }
 function loggedIn(username) {
     let userBtn = document.createElement("button");
+    let logoutBtn = document.createElement('button')
+    logoutBtn.textContent='Logout'
+  logoutBtn.addEventListener('click',()=>{
+    window.location.href='/logout'
+  })
+
   userBtn.setAttribute("id", "userBtn");
   userBtn.textContent = username;
   userBtn.addEventListener('click',()=>{
     window.location.href='./profile.html'
   })
   loginBar.append(userBtn);
+  loginBar.append(logoutBtn)
 }
 function closeModal() {
   modal.classList.toggle("modalNone", true);

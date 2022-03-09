@@ -61,7 +61,7 @@ async function myStrategy(username, password, done) {
         username: user.username,
         type: user.user_isAdmin,
       };
-      return done(null, user);
+      return done(null, maybeUser);
     } else if (!exists) {
       return done(null, false);
     }
@@ -152,9 +152,10 @@ function getCharacters(req, res) {
     .query(
       `SELECT * FROM characters WHERE user_id IN (
       SELECT user_id FROM users WHERE username=?);`,
-      { replacements: [username] }
+      { replacements: [req.user] }
     )
     .then((dbRes) => {
+      console.log(dbRes);
       res.status(200).send(dbRes);
     })
     .catch((err) => console.log(err));
@@ -189,26 +190,50 @@ function updateCharacter(req, res) {
 
 function addCharacter(req, res) {
   //post
-  let { userID, cName, cStats, cClass, cSubclass, cLevel, cCurrCamp, cItems } =
-    req.body;
+  let {
+    cCurrCamp,
+    username,
+    character_name,
+    level,
+    stats,
+    char_class,
+    subclass,
+    background,
+    proficiencies,
+    skills,
+    languages,
+    inventory,
+    bonds,
+    flaws,
+    ideals,
+  } = req.body;
+  console.log('prof',);
+//   INSERT INTO table(column,list,here)
+// SELECT column,list,here FROM
   sequelize
     .query(
-      `INSERT INTO characters (user_id,character_name,character_stats,character_subclass,character_level,character_curr_campaign,character_items)
-    VALUES(?,?,?,?,?,?,?,?);`,
+      "INSERT INTO characters(user_id,character_name,character_stats,character_class,character_subclass,character_level,character_curr_campaign,character_inventory,character_background,character_proficiencies,character_skills,character_languages,character_bonds,character_flaws,character_ideals) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       {
         replacements: [
-          userID,
-          cName,
-          cStats,
-          cClass,
-          cSubclass,
-          cLevel,
+          req.session.passport.user.id,
+          character_name,
+          stats,
+          char_class,
+          subclass,
+          level,
           cCurrCamp,
-          cItems,
+          inventory,
+          background,
+          proficiencies,
+          skills,
+          languages,
+          bonds,
+          flaws,
+          ideals,
         ],
       }
     )
-    .then((dbRes) => {})
+    .then((dbRes) => {res.status(200).send(dbRes)})
     .catch((err) => console.log(err));
 }
 function getCampaigns(req, res) {
@@ -264,7 +289,7 @@ function quickSave(host, obj) {
 function quickLoad(host) {
   for (const key in quickData) {
     if (host === key) {
-      console.log(key,"Loaded!");
+      console.log(key, "Loaded!");
       return quickData[key];
     }
   }
@@ -281,16 +306,15 @@ async function getDndInfo(str, api = false) {
     }
     if (quickLoad(host) === false) {
       let res = await axios.get(host);
-      if (res.data.hasOwnProperty('results')) {
-        res = res.data.results 
+      if (res.data.hasOwnProperty("results")) {
+        res = res.data.results;
       } else {
-        res = res.data
+        res = res.data;
       }
       quickSave(host, res);
-      return quickLoad(host)
+      return quickLoad(host);
     } else {
-      console.log('quickloaded: ',JSON.stringify(quickLoad(host)));
-      return quickLoad(host)
+      return quickLoad(host);
     }
   } catch (error) {
     console.log(error);
@@ -299,7 +323,7 @@ async function getDndInfo(str, api = false) {
 async function moreInfo(req, res) {
   try {
     let { urlSent } = req.query;
-    urlSent = urlSent.replaceAll('@7@','/')
+    urlSent = urlSent.replaceAll("@7@", "/");
     if (urlSent !== undefined) {
       if (quickLoad(urlSent) === false) {
         let theInfo = await getDndInfo(urlSent);
@@ -318,7 +342,7 @@ async function moreInfo(req, res) {
 
 async function getCharLevels(req, res) {
   let { charClass } = req.query;
-  console.log('charClass',charClass,req.query);
+  console.log("charClass", charClass, req.query);
 
   if (getCharLevelsHasRan === false) {
     for (let i = 0; i < allClasses.length; i++) {
@@ -331,7 +355,6 @@ async function getCharLevels(req, res) {
   let link = `classes/${charClass}/levels`;
   if (charClass !== undefined) {
     let lvlRes = await getDndInfo(link);
-    console.log("charClass", charClass,lvlRes);
     res.status(200).send(lvlRes);
   } else {
     res.status(404).send("No Class Sent");
@@ -366,16 +389,6 @@ async function baseCharInfo(req, res) {
     console.log(error);
   }
 }
-/*          
-
--- Name 
--- Race
--- Class
--background
-
--- Stat Choice
-
-*/
 
 module.exports = {
   getCampaigns,

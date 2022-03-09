@@ -1,0 +1,8 @@
+﻿    • Talk about Home/login and register page
+    • Talk about Profile page features
+    • Talk about Character creator
+        ◦ talk about each view(level,race,class,background)
+    • Talk about Homebrew addition
+    • Talk about characters in campaigns
+    • ^^^don’t talk about the stuff that isn’t done
+      

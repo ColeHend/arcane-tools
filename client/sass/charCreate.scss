@@ -4,7 +4,7 @@
 // <span id="savingThrows"></span>
 // <span id="subclasses"></span>
 // <span id="skills"></span>
-#classInfo {
+#classInfo { 
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -13,28 +13,28 @@
 #characterLevel{
     width: 50px;
 }
-table {
-  @include normalBorder;
-//   max-width: 100vw;
+.hidden{
+    display: none;
 }
-tr {
-  @include normalBorder;
-  height: auto;
+#createParent{
+    width: 90vw;
 }
-// thead{
-//     height: fit-content;
-// }
-th{
-    // @include normalBorder;
-//   height: fit-content;
-    font-size: 75%
+#charLevel{
+    margin-left: auto;
+    margin-right: auto;
 }
-td{
-    // @include normalBorder;
-    text-align: center;
-    height: auto;
+#chooseRace{
+    margin-left: auto;
+    margin-right: auto;
 }
-
+#chooseClass{
+    margin-left: auto;
+    margin-right: auto;
+}
+#chooseBack{
+    margin-left: auto;
+    margin-right: auto;
+}
 span {
   font-weight: 700;
 }

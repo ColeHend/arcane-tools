@@ -34,7 +34,7 @@ body {
 #loginBar {
   display: flex;
   width: 100%;
-  justify-content: space-evenly;
+  justify-content: space-around;
   background-image: linear-gradient(to left, $primary, $secondary);
   button {
     flex-grow: 1;
