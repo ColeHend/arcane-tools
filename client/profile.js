@@ -1,4 +1,5 @@
 let username = window.localStorage.getItem("username");
+loggedIn(username);
 try {
   async function authy() {
     axios.get("/api/auth").then((resp) => {
@@ -12,27 +13,34 @@ try {
 
 console.log("username: ", username);
 
-loggedIn(username);
-function createCharDisplay(charArr,toShow,toReplace=['','']) {
-  let allChar = document.createElement('div');
+function createRow(charArr,toShow) {
+  let allChars = []
   for (let i = 0; i < charArr.length; i++) {
-    let oneChar = document.createElement('div');
-    for (let key in charArr[i]) {
-      let span = document.createElement('span');
-      let p = document.createElement('p');
-      const element = charArr[i][key];
-      if (toShow.includes(key)) {
-        let toSho = key.replace(toReplace[0],toReplace[1])
-        span.append(toSho)
-        p.append(span)
-        p.append(element)
-      } 
-      oneChar.append(p)
-    }
-    allChar.append(oneChar);
+    let row = document.createElement('tr');
+    // for (const key in charArr[i]) {
+      let tdName = document.createElement('td');
+      tdName.append(charArr[i].character_name)
+      let tdLevel = document.createElement('td');
+      tdLevel.append(charArr[i].character_level)
+      let tdRace = document.createElement('td');
+      tdRace.append(charArr[i].character_race)//n/a 
+      let tdClass = document.createElement('td');
+      tdClass.append(charArr[i].character_class)
+      let tdSubclass = document.createElement('td');
+      tdSubclass.append(charArr[i].character_subclass)
+      let tdBackg = document.createElement('td');
+      tdBackg.append(charArr[i].character_background)
+      row.append(tdName)
+      row.append(tdLevel)
+      row.append(tdRace)
+      row.append(tdClass)
+      row.append(tdSubclass)
+      row.append(tdBackg)
+      allChars.push(row)
   }
-  return allChar
+  return allChars
 }
+
 const playerContent = document.getElementById("playerContent");
 const buttonBar = document.getElementById('buttonBar');
 const playerChars = document.getElementById("characters");
@@ -46,9 +54,16 @@ try {
     console.log(`rows: `,rows,'chars',characters);
     console.log("Char res: ", res);
     if (rows > 0) {
-      playerChars.append(createCharDisplay(characters,toShow,['character_','']));
+      document.getElementById('charTable').classList.toggle('hidden',false)
+      let tableChars = createRow(characters,toShow)
+      for (let i = 0; i < tableChars.length; i++) {
+        const element = tableChars[i];
+        playerChars.append(element)
+        
+      }
     } else {
       charHead.textContent = "No Characters Found";
+      document.getElementById('charTable').classList.toggle('hidden',true)
     }
   }
   addChars();
@@ -102,6 +117,9 @@ function createButtonBar() {
     addCampaignBtn.textContent = "Add a Campaign"
     const addHomebrewBtn = document.createElement('button');
     addHomebrewBtn.textContent = 'Create Homebrew'
+
+    addHomebrewBtn.addEventListener('click',()=>window.location.href='/homebrew.html');
+
     buttonBar.appendChild(addCharBtn)
     buttonBar.appendChild(addCampaignBtn)
     buttonBar.appendChild(addHomebrewBtn)

@@ -10,6 +10,7 @@ const proficiencies = document.getElementById("proficiencies");
 const savingThrows = document.getElementById("savingThrows");
 const subclasses = document.getElementById("subclasses");
 const subclassSelect = document.getElementById("subclassSelect");
+const subclassS = document.getElementById("subclassS");
 const skills = document.getElementById("skills");
 const backInfo = document.getElementById("backInfo");
 const raceSize = document.getElementById("raceSize");
@@ -37,16 +38,26 @@ const chooseNameView = document.getAnimations("chooseNameView");
 const charLevelView = document.getElementById("charLevel");
 const chooseRaceView = document.getElementById("chooseRace");
 const chooseClassView = document.getElementById("chooseClass");
+const chooseStats = document.getElementById("chooseStats");
 const chooseBackView = document.getElementById("chooseBack");
 const lastViewBtn = document.getElementById("lastView");
 const nextViewBtn = document.getElementById("nextView");
 const submitCharBtn = document.getElementById("submitChar");
+
+let statSelectType = document.getElementById("statSelectType");
+let str = document.getElementById("strength");
+let dex = document.getElementById("dexterity");
+let con = document.getElementById("constitution");
+let wis = document.getElementById("wisdom");
+let int = document.getElementById("intelligence");
+let cha = document.getElementById("charisma");
 var currView = 0;
 const views = [
   //   chooseNameView,
   charLevelView,
   chooseRaceView,
   chooseClassView,
+  chooseStats,
   chooseBackView,
 ];
 const playerStats = {
@@ -381,7 +392,7 @@ nextViewBtn.addEventListener("click", nextView);
 //----useful functions--------------
 
 function createSpecialP(arr, list = false, listName = false) {
-  let p = document.createElement("p");
+  let p = document.createElement("div");
   if (list === false) {
     p.append(arr.join(", "));
   } else if (list === true) {
@@ -393,6 +404,7 @@ function createSpecialP(arr, list = false, listName = false) {
       switch (listName) {
         case "stats":
           select.classList.toggle("stats", true);
+          break;
         case "equipment":
           select.classList.toggle("equipment", true);
           if (setValue === "Simple Weapons") {
@@ -440,7 +452,7 @@ function createSpecialP(arr, list = false, listName = false) {
   return p;
 }
 function createP(arr, list = false, amnt = false) {
-  let p = document.createElement("p");
+  let p = document.createElement("div");
   if (list === false && amnt === false) {
     p.append(arr.join(", "));
   }
@@ -608,7 +620,7 @@ function createLevelData(levelData) {
   for (let key in levelData[lvl]) {
     if (checkCond(key) === false) {
       console.log("key", key);
-      let p = document.createElement("p");
+      let p = document.createElement("div");
       let span = document.createElement("span");
       let div = document.createElement("div");
       let theData = levelData[lvl][key];
@@ -616,31 +628,32 @@ function createLevelData(levelData) {
         for (let key2 in theData) {
           if (checkCond(key2) === false) {
             span = document.createElement("span");
-            div = document.createElement("p");
+            p = document.createElement("div");
+            div = document.createElement("div");
             span.append(fixTableStr(key2));
             p.append(span);
             p.append(theData[key2]);
-            div.append(p);
-            classSpecificData.append(div);
+            // div.append(p);
+            classSpecificData.append(p);
           }
         }
       } else if (Array.isArray(theData) === false) {
         span.append(fixTableStr(key));
-        p.append(theData);
+        div.append(span);
+        div.append(theData);
       } else if (Array.isArray(theData) === true && theData.length > 0) {
         span = document.createElement("span");
         div = document.createElement("div");
-        span.textContent = fixTableStr(key);
-        p.append(createArr(theData).join(",\n"));
+        span.append(fixTableStr(key));
+        // p.append();
         div.append(span);
-        div.append(p);
+        div.append(createArr(theData).join(",\n"));
         classSpecificData.append(div);
       } else {
         span.append(fixTableStr(key, true));
-        p.append(fixTableStr(JSON.stringify(theData)));
+        div.append(span);
+        div.append(fixTableStr(JSON.stringify(theData)));
       }
-      div.append(span);
-      div.append(p);
       classSpecificData.append(div);
     }
   }
@@ -664,11 +677,11 @@ function addCharInfo(res) {
   let chooseAmnt = res.data.proficiency_choices[0].choose;
   hitDie.innerHTML = '<span class="">Hit Die:</span>';
   proficiencies.innerHTML = '<span class="charSpecs">Proficiencies</span>';
-  subclasses.innerHTML = `<span class="charSpecs">Subclasses</span>`;
+  // subclasses.innerHTML = `<span class="charSpecs">Subclasses</span>`;
   let subSelect = document.createElement("select");
   subSelect.id = "subclassSelect";
   subSelect.name = "subclassSelect";
-  subclasses.append(subSelect);
+  // subclasses.append(subSelect);
   savingThrows.innerHTML = '<span class="charSpecs">Saving Throws</span>';
   startingEquip.innerHTML = '<span class="charSpecs">Starting Equipment</span>';
   chooseSkills.innerHTML = `<span class="charSpecs">Choose ${chooseAmnt} Skills</span>`;
@@ -704,7 +717,6 @@ function addRaceInfo(res) {
   for (const key in res) {
     let containDiv = document.createElement("div");
     let span = document.createElement("span");
-    console.log("RaceKeys", key);
     switch (key) {
       case "size":
         span.append("\nSize: ");
@@ -725,12 +737,14 @@ function addRaceInfo(res) {
         raceLang.append(containDiv);
         break;
       case "language_options":
-        span.append("Choose A Language: ");
-        containDiv.append(span);
-        containDiv.append(
-          createSpecialP(createArr(res[key].from), true, "language")
-        );
-        raceLang.append(containDiv);
+        if (createArr(res[key].from).length > 0) {
+          span.append("Choose A Language: ");
+          containDiv.append(span);
+          containDiv.append(
+            createSpecialP(createArr(res[key].from), true, "language")
+          );
+          raceLang.append(containDiv);
+        }
         break;
       case "speed":
         span.append("\nSpeed: ");
@@ -833,9 +847,70 @@ function sortLevels(levelsRes, maxLvl = 10) {
   return levels;
 }
 
-function classSelect() {
-  return document.getElementById("classSelect");
+let standArr = [
+  ["Choose", true],
+  [15, false],
+  [13, false],
+  [12, false],
+  [11, false],
+  [10, false],
+  [8, false],
+];
+function createStat(id) {
+  
+  let select = document.createElement("select");
+  select.id = id;
+  for (let i = 0; i < stanArr.length; i++) {
+    const element = stanArr[i];
+    const option = document.createElement("option");
+    option.append(element);
+  }
+  select.addEventListener("change", updateStats);
 }
+function drawStats() {
+  str.innerHTML = "";
+  dex.innerHTML = "";
+  con.innerHTML = "";
+  int.innerHTML = "";
+  wis.innerHTML = "";
+  cha.innerHTML = "";
+  let strSelect = createStat("strVal");
+  let dexSelect = createStat("dexVal");
+  let conSelect = createStat("conVal");
+  let intSelect = createStat("intVal");
+  let wisSelect = createStat("wisVal");
+  let chaSelect = createStat("chaVal");
+  str.append(strSelect);
+  dex.append(dexSelect);
+  con.append(conSelect);
+  int.append(intSelect);
+  wis.append(wisSelect);
+  cha.append(chaSelect);
+}
+function updateStats() {
+  stanArr.splice()
+  for (let i = 0; i < stanArr.length; i++) {
+    const element = stanArr[i];
+    const option = document.createElement("option");
+    option.append(element);
+  }
+}
+statSelectType.addEventListener("change", showStatChoices);
+function showStatChoices() {
+  if (statSelectType.value === "standard") {
+    const stanArr = [0, 15, 13, 12, 11, 10, 8];
+    let allSelectArr = [
+      strSelect,
+      dexSelect,
+      conSelect,
+      intSelect,
+      wisSelect,
+      chaSelect,
+    ];
+  } else if (statSelectType.value === "manual") {
+  }
+}
+showStatChoices();
 // ------authentication----------
 try {
   async function authy() {
@@ -878,6 +953,7 @@ try {
         addBackInfo(backRes);
       });
   }
+
   function addFeatsToLvl(charLevels, subLevels) {
     for (let i = 0; i < charLevels.length; i++) {
       for (let k = 0; k < subLevels.length; k++) {
@@ -914,8 +990,11 @@ try {
         classStartItems = createP(
           createEquip(classDetails.data.starting_equipment)
         );
-        console.log(createP(createArr(classDetails.data.subclasses)));
-        subclassSelect.append(createP(createArr(classDetails.data.subclasses)));
+        subclassS.innerHTML = ``;
+        let subclassArr = createArr(classDetails.data.subclasses);
+        let subclCreate = createSpecialP(subclassArr, true, "subclass");
+        console.log(subclCreate);
+        subclassS.append(subclCreate);
         fillSelector(classDetails.data.subclasses, subclassSelect);
       });
     await getLevels();
@@ -951,27 +1030,28 @@ try {
 }
 
 function uniqueArr(elemArr) {
-    let rSet = new Set();
-    elemArr.forEach((elem) => {
-      if (elem.value) {
-        rSet.add(elem.value);
-      } else {
-        let addElem = elem.childNodes[0].data.split(",");
-        addElem.forEach((x) => {
-          rSet.add(x);
-        });
-      }
-    });
-    rSet = [...rSet];
-    return rSet
-  }
+  let rSet = new Set();
+  elemArr.forEach((elem) => {
+    if (elem.value) {
+      rSet.add(elem.value);
+    } else {
+      let addElem = elem.childNodes[0].data.split(",");
+      addElem.forEach((x) => {
+        rSet.add(x);
+      });
+    }
+  });
+  rSet = [...rSet];
+  return rSet;
+}
 
 function submitCharacter(e) {
-    e.preventDefault()
-  let cStats = playerStats
-  let cCurrCamp = null
+  e.preventDefault();
+  let cStats = playerStats;
+  let cCurrCamp = null;
 
   let cName = charName.value;
+  let cRace = raceSelect.value;
   let cClass = selectClass.value;
   let cSubclass = subclassSelect.value;
   let background = backSelect.value;
@@ -1000,52 +1080,55 @@ function submitCharacter(e) {
   //-- languages--
   let langSelect = document.querySelectorAll(".language");
   let alllangs = uniqueArr(langSelect);
- 
+
   //-- proficiencys---
   let allSelectProf = document.querySelectorAll(".proficiency");
-  
+
   let allProf = uniqueArr(allSelectProf);
   //---back---
   const yourBonds = document.querySelectorAll(".bonds");
   const yourFlaws = document.querySelectorAll(".flaws");
   const yourIdeals = document.querySelectorAll(".ideals");
-  
+
   let allBonds = uniqueArr(yourBonds);
-  let allFlaws = uniqueArr(yourFlaws)
-  let allIdeals = uniqueArr(yourIdeals)
+  let allFlaws = uniqueArr(yourFlaws);
+  let allIdeals = uniqueArr(yourIdeals);
 
   //----the object-----------
   cStats = JSON.stringify(cStats);
 
-  allProf = allProf.join(',')
-  charSkillSet = charSkillSet.join(',')
-  alllangs = alllangs.join(',')
-  allBonds = allBonds.join(',')
-  allFlaws = allFlaws.join(',')
-  allIdeals = allIdeals.join(',')
-  
+  allProf = allProf.join(",");
+  charSkillSet = charSkillSet.join(",");
+  alllangs = alllangs.join(",");
+  allBonds = allBonds.join(",");
+  allFlaws = allFlaws.join(",");
+  allIdeals = allIdeals.join(",");
+
   let submitObj = {
-      cCurrCamp,
+    cCurrCamp,
     username,
-    character_name:cName,
-    level:cLevel,
-    char_class:cClass,
-    subclass:cSubclass,
+    character_name: cName,
+    character_race: cRace,
+    level: cLevel,
+    char_class: cClass,
+    subclass: cSubclass,
     background,
-    proficiencies:allProf,
-    skills:charSkillSet,
-    languages:alllangs,
-    inventory:cItems,
-    bonds:allBonds,//a
-    flaws:allFlaws,
-    ideals:allIdeals,
-    stats:cStats,
+    proficiencies: allProf,
+    skills: charSkillSet,
+    languages: alllangs,
+    inventory: cItems,
+    bonds: allBonds, //a
+    flaws: allFlaws,
+    ideals: allIdeals,
+    stats: cStats,
   };
   console.log(submitObj);
-//   let toSend = JSON.stringify(submitObj)
-    axios.post("/api/addChar", submitObj).then((res) => {
-         window.location.href='/profile.html'
-     }).catch(err=>console.log(err))
+  axios
+    .post("/api/addChar", submitObj)
+    .then((res) => {
+      window.location.href = "/profile.html";
+    })
+    .catch((err) => console.log(err));
 }
 submitCharBtn.addEventListener("click", submitCharacter);
 loggedIn(username);

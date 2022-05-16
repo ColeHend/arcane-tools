@@ -120,6 +120,7 @@ function register(e) {
     .post("/api/register", sendObj)
     .then((res) => {
       console.log('REGISTERED');
+      login(e)
       res.status(200).send(res.data);
     })
     .catch((err) => console.log(err));

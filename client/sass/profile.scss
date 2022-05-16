@@ -7,7 +7,7 @@
   width: 300px;
   height: auto;
   text-align: center;
-  margin: 1%; 
+  margin: 1%;
 }
 
 #playerContent {
@@ -17,13 +17,30 @@
   width: 100%;
   height: auto;
   color: $third;
-  #characters {
+  #characters2 {
     @include profileContent;
+    width: auto;
   }
+  tr {
+    @include normalBorder;
+  }
+  tbody tr {
+    background-color: transparentize($color: $primary, $amount: 0.5);
+    margin-top: 2px;
+}
   #campaigns {
     @include profileContent;
   }
   #homebrew {
     @include profileContent;
   }
+}
+p span {
+  font-style: normal;
+  font-weight: 600;
+  margin: 5px;
+}
+p {
+  font-weight: 400;
+  font-style: italic;
 }

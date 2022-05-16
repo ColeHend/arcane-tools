@@ -1,1 +1,6 @@
-@import 'index' 
+@import 'index' ;
+
+#homebrewDiv {
+    display: flex;
+    flex-direction: column;
+}

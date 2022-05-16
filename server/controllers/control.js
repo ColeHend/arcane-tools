@@ -193,6 +193,7 @@ function addCharacter(req, res) {
   let {
     cCurrCamp,
     username,
+    character_race,
     character_name,
     level,
     stats,
@@ -212,7 +213,7 @@ function addCharacter(req, res) {
 // SELECT column,list,here FROM
   sequelize
     .query(
-      "INSERT INTO characters(user_id,character_name,character_stats,character_class,character_subclass,character_level,character_curr_campaign,character_inventory,character_background,character_proficiencies,character_skills,character_languages,character_bonds,character_flaws,character_ideals) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      "INSERT INTO characters(user_id,character_name,character_stats,character_class,character_subclass,character_level,character_curr_campaign,character_inventory,character_background,character_proficiencies,character_skills,character_languages,character_bonds,character_flaws,character_ideals,character_race) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       {
         replacements: [
           req.session.passport.user.id,
@@ -230,6 +231,7 @@ function addCharacter(req, res) {
           bonds,
           flaws,
           ideals,
+          character_race
         ],
       }
     )

@@ -40,7 +40,8 @@ CREATE TABLE characters(
     character_languages TEXT,
     character_bonds TEXT,
     character_flaws TEXT,
-    character_ideals TEXT
+    character_ideals TEXT,
+    character_race VARCHAR(75)
 );
 
 

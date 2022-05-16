@@ -16,8 +16,30 @@
 .hidden{
     display: none;
 }
+select{
+    max-width: 100vw;
+}
 #createParent{
-    width: 90vw;
+    @include normalBorder;
+    margin-top: 5px;
+    background-color: #fff;
+    width: min-content;
+    min-width: 70vw;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 5px;
+    padding-bottom: 15px;
+    #nextView{
+        float: right;
+        margin: 5px;
+    }
+    #lastView{
+        float: left;
+        margin: 5px;
+    }
+}
+#otherLevelData div span{
+    margin: 5px;
 }
 #charLevel{
     margin-left: auto;

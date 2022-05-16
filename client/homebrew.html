@@ -1,33 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Archie's Arcane Tools</title>
-    <link rel="stylesheet" href="./css/homebrew.css">
-</head>
-<body>
+    <link rel="stylesheet" href="./css/homebrew.css" />
+  </head>
+  <body>
     <header>
-        <div id="header">
-            <div id="banner">Archies Arcane Tools</div>
-            <nav>
-                <div id="loginBar"></div>
-                <div id="buttonBar"></div>
-            </nav>
-        </div>
+      <div id="header">
+        <div id="banner">Archies Arcane Tools</div>
+        <nav>
+          <div id="loginBar"></div>
+          <div id="buttonBar"></div>
+        </nav>
+      </div>
     </header>
     <main>
-       
-        
+      <div id="homebrewDiv">
+          <p>
+              <select name="homebrew_type" id="homebrewType"></select>
+              <input placeholder="Title" type="text" name="homebrew_title" id="homebrewTitle" />
+          </p>
+
+        <!-- start prof -->
+        <p>
+            <select name="profChoice1" id="profChoice1"></select>
+            <select name="profChoice2" id="profChoice2"></select>
+        </p>
+
+        <!-- start lang -->
+        <p>
+            <input disabled type="text" name="startLangs" id="startLangs" />
+            <select name="allLangs" id="allLangs"></select>
+            <input id="removeLangBtn" type="button" value="Remove" />
+            <input id="addLangBtn" type="button" value="Add" />
+            
+        </p>
+
+        <!-- start equip -->
+        <p></p>
+        <input disabled id="startEquip" type="text" />
+        <select name="allEquip" id="allEquip"></select>
+        <input id="addEquipBtn" type="button" value="Add" />
+        <input id="removeEquipBtn" type="button" value="Remove" />
+
+        <!-- feature desc/personality trait -->
+        <textarea placeholder="Description.." name="homebrew_desc" id="" cols="30" rows="10"></textarea>
+
+        <!-- personality traits -->
+        <input
+          placeholder="Add some personality traits.."
+          type="text"
+          name="personalityTraits"
+          id="personalityTraits"
+        />
+        <button id="personalityTraitsAdd">Add</button>
+
+        <!-- ideals -->
+        <input
+          placeholder="Add some ideals.."
+          type="text"
+          name="homebrewIdeals"
+          id="homebrewIdeals"
+        />
+        <button id="homebrewIdealsAdd">Add</button>
+
+        <!-- bonds -->
+        <input
+          placeholder="Add some bonds.."
+          type="text"
+          name="homebrewBonds"
+          id="homebrewBonds"
+        />
+        <button id="bondsAdd">Add</button>
+        <button type="button" id="submitButton">Submit!</button>
+      </div>
     </main>
-    <footer>
-        
-    </footer>
-    
+    <footer></footer>
+
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="./modules.js"></script>
     <script src="homebrew.js"></script>
-</body>
+  </body>
 </html>

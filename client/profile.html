@@ -1,40 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="./css/profile.css">
-</head>
-<body>
+    <link rel="stylesheet" href="./css/profile.css" />
+  </head>
+  <body>
     <header>
-        <div id="header">
-            <div id="banner">Archies Arcane Tools</div>
-            <nav>
-                <div id="loginBar"></div>
-                <div id="buttonBar"></div>
-            </nav>
-        </div>
+      <div id="header">
+        <div id="banner">Archies Arcane Tools</div>
+        <nav>
+          <div id="loginBar"></div>
+          <div id="buttonBar"></div>
+        </nav>
+      </div>
     </header>
     <main>
-        <div id="playerContent">
-            <div id="characters">
-                <p id="charHead"></p>
-            </div>
-            <div id="campaigns">
-                <p id="campHead"></p>
-
-            </div>
-            <div id="homebrew">
-                <p id="homeHead"></p>
-            </div>
+      <div id="playerContent">
+        <div id="characters2">
+          <h3 id="charHead">Characters!</h3>
+          <table class="hidden" id="charTable">
+            <thead>
+              <tr>
+                <th id="charName">Name</th>
+                <th id="charLevel">Level</th>
+                <th id="charRace">Race</th>
+                <th id="charClass">Class</th>
+                <th id="charSubclass">Subclass</th>
+                <th id="charBackground">Background</th>
+              </tr>
+            </thead>
+            <tbody id="characters"></tbody>
+          </table>
         </div>
+        <div id="campaigns">
+          <h3 id="campHead">Campaigns!</h3>
+        </div>
+        <div id="homebrew">
+          <h3 id="homeHead">Homebrew!</h3>
+        </div>
+      </div>
     </main>
     <footer></footer>
-    
+
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="./modules.js"></script>
     <script src="./profile.js"></script>
-</body>
+  </body>
 </html>

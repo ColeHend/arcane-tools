@@ -19,7 +19,11 @@
     </header>
     <main>
       <div id="createParent">
-          <input type="button" id="lastView" value="Previous"><input type="button" value="Next" id="nextView">
+        <input type="button" id="lastView" value="Previous" /><input
+          type="button"
+          value="Next"
+          id="nextView"
+        />
         <div id="chooseNameView">
           <input
             type="text"
@@ -28,7 +32,7 @@
             placeholder="Enter Character Name..."
           />
         </div>
-        <div class="hidden" id="charLevel">
+        <div id="charLevel">
           <span>Level: </span>
           <!-- <form action="/api/getCharLevels/" method="get"> -->
           <input
@@ -42,18 +46,18 @@
           <!-- </form> -->
         </div>
         <div class="hidden" id="chooseRace">
-            <select name="race" id="raceSelect"></select>
-            <div id="raceInfo">
-                <div>
-                    <p id="raceSize"></p>
-                    <div id="sizeDesc"></div>
-                </div>
-                <div id="raceLang"></div>
-                <div id="raceSpeed"></div>
-                <div id="raceStartProf"></div>
-                <div id="traits"></div>
-                <div id="subRaces"></div>
+          <select name="race" id="raceSelect"></select>
+          <div id="raceInfo">
+            <div>
+              <p id="raceSize"></p>
+              <div id="sizeDesc"></div>
             </div>
+            <div id="raceLang"></div>
+            <div id="raceSpeed"></div>
+            <div id="raceStartProf"></div>
+            <div id="traits"></div>
+            <div id="subRaces"></div>
+          </div>
         </div>
         <div class="hidden" id="chooseClass">
           <select name="class" id="classSelect"></select>
@@ -65,42 +69,56 @@
             <p id="savingThrows">
               <span class="charSpecs">Saving Throws</span>
             </p>
-            <p id="subclasses">
-                <span class="charSpecs">Subclasses</span>
+            <div id="subclasses">
+              <span class="charSpecs">Subclasses</span>
+              <p name="subclassS" id="subclassS">
                 <select name="subclassSelect" id="subclassSelect"></select>
-            </p>
+              </p>
+            </div>
             <div id="chooseSkills"></div>
-            <p id="startingEquip">
+            <div id="startingEquip">
               <span class="charSpecs">Starting Equipment</span>
-            </p>
+            </div>
             <div id="levelData">
-                <div name="currLevel" id="currLevel">
-                    <span>Level: </span>
-                </div>
-                <div name="profBonus" id="profBonus">
-                    <span>PB: </span>
-                </div>
-                <div name="features" id="features">
-                    <span>Features: </span>
-                </div>
-                <div id="otherLevelData"></div>
+              <div name="currLevel" id="currLevel">
+                <span>Level: </span>
+              </div>
+              <div name="profBonus" id="profBonus">
+                <span>PB: </span>
+              </div>
+              <div name="features" id="features">
+                <span>Features: </span>
+              </div>
+              <div id="otherLevelData"></div>
             </div>
           </div>
         </div>
-       
-        <div class="hidden" id="chooseBack">
-            <select name="backSelect" id="backSelect"></select>
-            <div id="backInfo">
-                <div id="bonds"></div>
-                <div id="flaws"></div>
-                <div id="ideals"></div>
-                <div id="languageOptions"></div>
-                <div id="personalityTraits"></div>
-                <div id="startingEquipment"></div>
-                <div id="backProficiencies"></div>
-            </div>
+        <div id="chooseStats" class="hidden">
+          <select name="statSelectType" id="statSelectType">
+            <option value="standard">Standard Array</option>
+            <option value="manual">Manual Choice</option>
+          </select>
+          <div id="strength">
+          </div>
+          <div id="dexterity"></div>
+          <div id="constitution"></div>
+          <div id="wisdom"></div>
+          <div id="intelligence"></div>
+          <div id="charisma"></div>
         </div>
-        <input class="hidden"  type="submit" value="Submit" id="submitChar">
+        <div class="hidden" id="chooseBack">
+          <select name="backSelect" id="backSelect"></select>
+          <div id="backInfo">
+            <div id="bonds"></div>
+            <div id="flaws"></div>
+            <div id="ideals"></div>
+            <div id="languageOptions"></div>
+            <div id="personalityTraits"></div>
+            <div id="startingEquipment"></div>
+            <div id="backProficiencies"></div>
+          </div>
+        </div>
+        <input class="hidden" type="submit" value="Submit" id="submitChar" />
       </div>
     </main>
     <footer></footer>
