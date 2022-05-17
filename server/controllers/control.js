@@ -1,7 +1,7 @@
 const path = require("path");
 let getCharLevelsHasRan = false;
 const { CONNECTION_STRING } = process.env;
-const Sequelize = require("sequelize");
+const { Sequelize } = require("sequelize");
 const sequelize = new Sequelize(CONNECTION_STRING, {
   dialect: "postgres",
   dialectOptions: {
@@ -45,10 +45,10 @@ async function myStrategy(username, password, done) {
       replacements: [username],
     });
 
+    console.log("daRespone:------- ", dbRes);
     if (!dbRes[0] || !dbRes[0][0]) {
       return done(null, false);
     }
-
     let user = dbRes[0][0];
 
     let secrtPass = user.user_password;
@@ -122,7 +122,9 @@ function userLogin(req, res) {
   //get
   let { username, password } = req.body;
   sequelize
-    .query(`SELECT * FROM users WHERE username=?;`, { replacements: [usename] })
+    .query(`SELECT * FROM users WHERE username=?;`, {
+      replacements: [username],
+    })
     .then((dbRes) => {
       const exists = bcrypt.compareSync(password, dbRes[0][0].password);
       if (exists) {
@@ -208,9 +210,9 @@ function addCharacter(req, res) {
     flaws,
     ideals,
   } = req.body;
-  console.log('prof',);
-//   INSERT INTO table(column,list,here)
-// SELECT column,list,here FROM
+  console.log("prof");
+  //   INSERT INTO table(column,list,here)
+  // SELECT column,list,here FROM
   sequelize
     .query(
       "INSERT INTO characters(user_id,character_name,character_stats,character_class,character_subclass,character_level,character_curr_campaign,character_inventory,character_background,character_proficiencies,character_skills,character_languages,character_bonds,character_flaws,character_ideals,character_race) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -231,11 +233,13 @@ function addCharacter(req, res) {
           bonds,
           flaws,
           ideals,
-          character_race
+          character_race,
         ],
       }
     )
-    .then((dbRes) => {res.status(200).send(dbRes)})
+    .then((dbRes) => {
+      res.status(200).send(dbRes);
+    })
     .catch((err) => console.log(err));
 }
 function getCampaigns(req, res) {

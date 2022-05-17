@@ -34,6 +34,7 @@ const currentLvl = document.getElementById("currLevel");
 const profBonus = document.getElementById("profBonus");
 const classFeatures = document.getElementById("features");
 const classSpecificData = document.getElementById("otherLevelData");
+// @ts-ignore
 const chooseNameView = document.getAnimations("chooseNameView");
 const charLevelView = document.getElementById("charLevel");
 const chooseRaceView = document.getElementById("chooseRace");
@@ -55,10 +56,10 @@ var currView = 0;
 const views = [
   //   chooseNameView,
   charLevelView,
-  chooseRaceView,
   chooseClassView,
   chooseStats,
   chooseBackView,
+  chooseRaceView,
 ];
 const playerStats = {
   CHA: [10],
@@ -359,12 +360,6 @@ function lastView() {
     views[currView].classList.toggle("hidden", false);
     submitCharBtn.classList.toggle("hidden", true);
 
-    // if (currView<1) {
-    //     lastViewBtn.classList.toggle('hidden',true)
-    // }
-    // if (currView<views.length--) {
-    //     nextViewBtn.classList.toggle('hidden',false)
-    // }
     console.log("views ", views, currView);
   }
 }
@@ -375,14 +370,10 @@ function nextView() {
     views[currView].classList.toggle("hidden", false);
 
     if (currView === views.length - 1) {
-      //   nextViewBtn.classList.toggle("hidden", true);
       submitCharBtn.classList.toggle("hidden", false);
     } else {
       submitCharBtn.classList.toggle("hidden", true);
     }
-    // if (currView>1) {
-    //     lastViewBtn.classList.toggle('hidden',true)
-    // }
     console.log("views ", views, currView);
   }
 }
@@ -391,7 +382,7 @@ nextViewBtn.addEventListener("click", nextView);
 
 //----useful functions--------------
 
-function createSpecialP(arr, list = false, listName = false) {
+function createProficiencies(arr, list = false, listName = "false") {
   let p = document.createElement("div");
   if (list === false) {
     p.append(arr.join(", "));
@@ -451,14 +442,16 @@ function createSpecialP(arr, list = false, listName = false) {
   }
   return p;
 }
-function createP(arr, list = false, amnt = false) {
+function createOptionsP(arr, list = false, amnt = false) {
   let p = document.createElement("div");
   if (list === false && amnt === false) {
     p.append(arr.join(", "));
   }
+  // @ts-ignore
   if (list === "equipment" && amnt === false) {
     p.append(arr.join(", "));
     p.classList.toggle("equipment", true);
+    // @ts-ignore
   } else if (list === "proficiency" && amnt === false) {
     p.append(arr.join(", "));
     p.classList.toggle("proficiency", true);
@@ -482,9 +475,7 @@ function createP(arr, list = false, amnt = false) {
       select.append(option);
     }
     if (amnt !== false) {
-      //   select.multiple = true;
-      //   checkSelected(select, amnt + 1);
-      //   select.addEventListener("change", () => checkSelected(select));
+      // @ts-ignore
       select.classList.toggle(amnt, true);
       p.append(select);
     }
@@ -508,8 +499,7 @@ function checkSelected(select, amnt) {
     }
   }
 }
-function createArr(arr) {
-  //res.data.saving_throws
+function createNameArr(arr) {
   let saveThrow = [];
   for (let i = 0; i < arr.length; i++) {
     saveThrow.push(arr[i].name);
@@ -594,6 +584,7 @@ function createLevelData(levelData) {
   classFeatures.innerHTML = "<span>Features: </span>";
   classSpecificData.innerHTML = "";
   //--curr level--
+  // @ts-ignore
   let lvl = charLvlSelect.value - 1;
   currentLvl.append(levelData[lvl].level);
   //---prof bonus--
@@ -601,7 +592,9 @@ function createLevelData(levelData) {
   //-----class features---
   let allCharFeatures = [];
   for (let i = 0; i < levelData.length; i++) {
-    allCharFeatures = allCharFeatures.concat(createArr(levelData[i].features));
+    allCharFeatures = allCharFeatures.concat(
+      createNameArr(levelData[i].features)
+    );
   }
   classFeatures.append(allCharFeatures.join(",\n"));
   console.log("features: ", allCharFeatures);
@@ -613,7 +606,7 @@ function createLevelData(levelData) {
     stats[1].push(playerStats[key]);
   }
   for (let i = 0; i < aScoreUpNum; i++) {
-    createSpecialP(stats[0], true, "stats");
+    createProficiencies(stats[0], true, "stats");
   }
   //--class specific features---
   console.log("levelData[lvl]", levelData[lvl]);
@@ -647,7 +640,7 @@ function createLevelData(levelData) {
         span.append(fixTableStr(key));
         // p.append();
         div.append(span);
-        div.append(createArr(theData).join(",\n"));
+        div.append(createNameArr(theData).join(",\n"));
         classSpecificData.append(div);
       } else {
         span.append(fixTableStr(key, true));
@@ -689,21 +682,23 @@ function addCharInfo(res) {
   hitDie.append("d" + JSON.stringify(res.data.hit_die));
 
   proficiencies.append(
-    createP(createArr(res.data.proficiencies), "proficiency")
+    // @ts-ignore
+    createOptionsP(createNameArr(res.data.proficiencies), "proficiency")
   );
 
-  savingThrows.append(createP(createArr(res.data.saving_throws)));
-  let classItems = createP(
+  savingThrows.append(createOptionsP(createNameArr(res.data.saving_throws)));
+  let classItems = createOptionsP(
     createEquip(res.data.starting_equipment),
+    // @ts-ignore
     "equipment"
   );
   startingEquip.append(classItems);
-  let chooseTheSkills = createArr(res.data.proficiency_choices[0].from);
+  let chooseTheSkills = createNameArr(res.data.proficiency_choices[0].from);
   for (let i = 0; i < chooseAmnt; i++) {
-    chooseSkills.append(createSpecialP(chooseTheSkills, true, "skills"));
+    chooseSkills.append(createProficiencies(chooseTheSkills, true, "skills"));
   }
   createEquip(res.data.starting_equipment_options).forEach((elem) =>
-    startingEquip.append(createSpecialP(elem, true, "equipment"))
+    startingEquip.append(createProficiencies(elem, true, "equipment"))
   );
 }
 function addRaceInfo(res) {
@@ -731,17 +726,18 @@ function addRaceInfo(res) {
         span.append("Languages: ");
         containDiv.append(span);
         let label = document.createElement("span");
-        label.append(createArr(res[key]));
+        // @ts-ignore
+        label.append(createNameArr(res[key]));
         label.classList.toggle("language", true);
         containDiv.append(label);
         raceLang.append(containDiv);
         break;
       case "language_options":
-        if (createArr(res[key].from).length > 0) {
+        if (createNameArr(res[key].from).length > 0) {
           span.append("Choose A Language: ");
           containDiv.append(span);
           containDiv.append(
-            createSpecialP(createArr(res[key].from), true, "language")
+            createProficiencies(createNameArr(res[key].from), true, "language")
           );
           raceLang.append(containDiv);
         }
@@ -757,8 +753,8 @@ function addRaceInfo(res) {
         containDiv.append(span);
         console.log(res[key]);
 
-        containDiv.append(createP(createArr(res[key]).slice(0, 0)));
-        console.log("RaceKeys", createP(createArr(res[key])));
+        containDiv.append(createOptionsP(createNameArr(res[key]).slice(0, 0)));
+        console.log("RaceKeys", createOptionsP(createNameArr(res[key])));
         raceStartProf.append(containDiv);
         break;
       case "starting_proficiency_options":
@@ -766,7 +762,7 @@ function addRaceInfo(res) {
         for (let i = 0; i < res[key].choose; i++) {
           const element = res[key].from;
           containDiv.append(
-            createSpecialP(createArr(element), true, "proficiency")
+            createProficiencies(createNameArr(element), true, "proficiency")
           );
         }
         console.log("RaceKeys", res[key]);
@@ -777,13 +773,15 @@ function addRaceInfo(res) {
       case "traits":
         span.append("Traits: ");
         containDiv.append(span);
-        containDiv.append(createArr(res[key]));
+        // @ts-ignore
+        containDiv.append(createNameArr(res[key]));
         traits.append(containDiv);
         break;
       case "subRaces":
         span.append("Subraces: ");
         containDiv.append(span);
-        containDiv.append(createArr(res[key]));
+        // @ts-ignore
+        containDiv.append(createNameArr(res[key]));
         subRaces.append(containDiv);
         break;
     }
@@ -797,36 +795,41 @@ function addBackInfo(res) {
       case "bonds":
         bonds.innerHTML = "<span>Bonds</span>";
         for (let i = 0; i < chooseAmnt; i++) {
-          bonds.append(createP(chooseFrom, true, "bonds"));
+          // @ts-ignore
+          bonds.append(createOptionsP(chooseFrom, true, "bonds"));
         }
         break;
       case "flaws":
         flaws.innerHTML = "<span>Flaws</span>";
         for (let i = 0; i < chooseAmnt; i++) {
-          flaws.append(createP(chooseFrom, true, "flaws"));
+          // @ts-ignore
+          flaws.append(createOptionsP(chooseFrom, true, "flaws"));
         }
         break;
       case "ideals":
         ideals.innerHTML = "<span>Ideals</span>";
         for (let i = 0; i < chooseAmnt; i++) {
-          ideals.append(createP(chooseFrom, true, "ideals"));
+          // @ts-ignore
+          ideals.append(createOptionsP(chooseFrom, true, "ideals"));
         }
         break;
       case "language_options":
         languageOptions.innerHTML = `<span>Choose ${chooseAmnt} Language Options</span>`;
         for (let i = 0; i < chooseAmnt; i++) {
-          languageOptions.append(createSpecialP(chooseFrom, true, "language"));
+          languageOptions.append(
+            createProficiencies(chooseFrom, true, "language")
+          );
         }
         break;
       case "personality_traits":
         personalityTraits.innerHTML = "<span>Personality Traits</span>";
-        personalityTraits.append(createP(chooseFrom, true));
-        personalityTraits.append(createP(chooseFrom, true));
+        personalityTraits.append(createOptionsP(chooseFrom, true));
+        personalityTraits.append(createOptionsP(chooseFrom, true));
         break;
       case "starting_equipment":
       // startingEquipment.append(res.data[key]);
       case "starting_equipment_options":
-      // backProficiencies.append(createP(createEquip(res.data[key])));
+      // backProficiencies.append(createOptionsP(createEquip(res.data[key])));
       case "starting_proficiencies":
       // backProficiencies.append(createEquip(res.data[key]));
     }
@@ -857,10 +860,11 @@ let standArr = [
   [8, false],
 ];
 function createStat(id) {
-  
   let select = document.createElement("select");
   select.id = id;
+  // @ts-ignore
   for (let i = 0; i < stanArr.length; i++) {
+    // @ts-ignore
     const element = stanArr[i];
     const option = document.createElement("option");
     option.append(element);
@@ -880,16 +884,25 @@ function drawStats() {
   let intSelect = createStat("intVal");
   let wisSelect = createStat("wisVal");
   let chaSelect = createStat("chaVal");
+  // @ts-ignore
   str.append(strSelect);
+  // @ts-ignore
   dex.append(dexSelect);
+  // @ts-ignore
   con.append(conSelect);
+  // @ts-ignore
   int.append(intSelect);
+  // @ts-ignore
   wis.append(wisSelect);
+  // @ts-ignore
   cha.append(chaSelect);
 }
 function updateStats() {
-  stanArr.splice()
+  // @ts-ignore
+  stanArr.splice();
+  // @ts-ignore
   for (let i = 0; i < stanArr.length; i++) {
+    // @ts-ignore
     const element = stanArr[i];
     const option = document.createElement("option");
     option.append(element);
@@ -897,16 +910,26 @@ function updateStats() {
 }
 statSelectType.addEventListener("change", showStatChoices);
 function showStatChoices() {
+  // @ts-ignore
   if (statSelectType.value === "standard") {
+    // @ts-ignore
     const stanArr = [0, 15, 13, 12, 11, 10, 8];
+    // @ts-ignore
     let allSelectArr = [
+      // @ts-ignore
       strSelect,
+      // @ts-ignore
       dexSelect,
+      // @ts-ignore
       conSelect,
+      // @ts-ignore
       intSelect,
+      // @ts-ignore
       wisSelect,
+      // @ts-ignore
       chaSelect,
     ];
+    // @ts-ignore
   } else if (statSelectType.value === "manual") {
   }
 }
@@ -914,6 +937,7 @@ showStatChoices();
 // ------authentication----------
 try {
   async function authy() {
+    // @ts-ignore
     axios.get("/api/auth").then((resp) => {
       if (resp.data === false) {
         window.location.href = "./index.html";
@@ -927,6 +951,7 @@ try {
 //-------D&D character info-----------
 try {
   async function getBaseSelections() {
+    // @ts-ignore
     await axios.get("/api/baseCharInfo/").then((resA) => {
       fillSelector(resA.data.races, raceSelect);
       fillSelector(resA.data.classes, selectClass);
@@ -935,7 +960,9 @@ try {
   }
 
   async function getRace() {
+    // @ts-ignore
     let raceURL = `races@7@${raceSelect.value}`;
+    // @ts-ignore
     await axios
       .get("/api/moreinfo", { params: { urlSent: raceURL } })
       .then((raceInfo) => {
@@ -945,7 +972,9 @@ try {
   }
 
   async function getBackgr() {
+    // @ts-ignore
     let backURL = `backgrounds@7@${backSelect.value}`;
+    // @ts-ignore
     await axios
       .get("/api/moreinfo", { params: { urlSent: backURL } })
       .then((backRes) => {
@@ -967,32 +996,39 @@ try {
     return charLevels;
   }
   async function getLevels() {
+    // @ts-ignore
     let cClass = selectClass.value;
     let subLevels = await getSubclassInfo();
     console.log("subLevels", subLevels);
 
     let cLvlObj = { params: { charClass: cClass } };
+    // @ts-ignore
     let charLevels = await axios.get("/api/getCharLevels/", cLvlObj);
 
+    // @ts-ignore
     let sortMyLevels = await sortLevels(charLevels.data, charLvlSelect.value);
     await addFeatsToLvl(sortMyLevels, subLevels.data);
     await createLevelData(sortMyLevels);
   }
+  // @ts-ignore
   let classStartItems = [];
   async function getClassInfo() {
+    // @ts-ignore
     let cClass = selectClass.value;
     let theURL = `classes@7@${cClass}`;
+    // @ts-ignore
     await axios
       .get("/api/moreinfo", { params: { urlSent: theURL } })
       .then((classDetails) => {
         console.log("classDetails", classDetails);
         addCharInfo(classDetails);
-        classStartItems = createP(
+        // @ts-ignore
+        classStartItems = createOptionsP(
           createEquip(classDetails.data.starting_equipment)
         );
         subclassS.innerHTML = ``;
-        let subclassArr = createArr(classDetails.data.subclasses);
-        let subclCreate = createSpecialP(subclassArr, true, "subclass");
+        let subclassArr = createNameArr(classDetails.data.subclasses);
+        let subclCreate = createProficiencies(subclassArr, true, "subclass");
         console.log(subclCreate);
         subclassS.append(subclCreate);
         fillSelector(classDetails.data.subclasses, subclassSelect);
@@ -1000,12 +1036,15 @@ try {
     await getLevels();
   }
   async function getSubclassInfo() {
+    // @ts-ignore
     let subURLvalue = subclassSelect.value;
+    // @ts-ignore
     if (subclassSelect.value === undefined) {
       subURLvalue = "berserker";
     }
     let subURL = `subclasses@7@${subURLvalue}@7@levels`;
     console.log("subURL", subURL);
+    // @ts-ignore
     let subRes = await axios.get("/api/moreinfo", {
       params: { urlSent: subURL },
     });
@@ -1041,6 +1080,7 @@ function uniqueArr(elemArr) {
       });
     }
   });
+  // @ts-ignore
   rSet = [...rSet];
   return rSet;
 }
@@ -1050,11 +1090,17 @@ function submitCharacter(e) {
   let cStats = playerStats;
   let cCurrCamp = null;
 
+  // @ts-ignore
   let cName = charName.value;
+  // @ts-ignore
   let cRace = raceSelect.value;
+  // @ts-ignore
   let cClass = selectClass.value;
+  // @ts-ignore
   let cSubclass = subclassSelect.value;
+  // @ts-ignore
   let background = backSelect.value;
+  // @ts-ignore
   let cLevel = charLvlSelect.value;
   //--stats-----
 
@@ -1062,16 +1108,21 @@ function submitCharacter(e) {
   let charSkillSet = new Set();
   let allSkills = document.querySelectorAll(".skills");
   allSkills.forEach((ele) => {
+    // @ts-ignore
     charSkillSet.add(ele.value);
   });
+  // @ts-ignore
   charSkillSet = [...charSkillSet];
   //---items----
   let multiChoiceItems = [];
   let multiChoiceItemSelectors = document.querySelectorAll(".equipment");
   multiChoiceItemSelectors.forEach((ele) => {
+    // @ts-ignore
     if (ele.value) {
+      // @ts-ignore
       multiChoiceItems.push(ele.value);
     } else {
+      // @ts-ignore
       multiChoiceItems.push(ele.childNodes[0].data);
     }
   });
@@ -1095,13 +1146,20 @@ function submitCharacter(e) {
   let allIdeals = uniqueArr(yourIdeals);
 
   //----the object-----------
+  // @ts-ignore
   cStats = JSON.stringify(cStats);
 
+  // @ts-ignore
   allProf = allProf.join(",");
+  // @ts-ignore
   charSkillSet = charSkillSet.join(",");
+  // @ts-ignore
   alllangs = alllangs.join(",");
+  // @ts-ignore
   allBonds = allBonds.join(",");
+  // @ts-ignore
   allFlaws = allFlaws.join(",");
+  // @ts-ignore
   allIdeals = allIdeals.join(",");
 
   let submitObj = {
@@ -1123,8 +1181,10 @@ function submitCharacter(e) {
     stats: cStats,
   };
   console.log(submitObj);
+  // @ts-ignore
   axios
     .post("/api/addChar", submitObj)
+    // @ts-ignore
     .then((res) => {
       window.location.href = "/profile.html";
     })

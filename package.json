@@ -11,7 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.26.0",
+    "JSON": "^1.0.0",
+    "axios": "^0.27.2",
     "bcryptjs": "^2.4.3",
     "connect-redis": "^6.1.1",
     "connect-session-sequelize": "^7.1.2",
@@ -21,11 +22,11 @@
     "express": "^4.17.3",
     "express-session": "^1.17.2",
     "http": "^0.0.1-security",
-    "JSON": "^1.0.0",
     "node-sass": "^7.0.1",
     "passport": "^0.5.2",
     "passport-local": "^1.0.0",
     "pg": "^8.7.3",
+    "requirejs": "^2.3.6",
     "sequelize": "^6.16.2",
     "socket.io": "^4.4.1"
   },

@@ -1,0 +1,45 @@
+.createBody{
+     width: 75%;
+     margin: 5%;
+     margin-top: 0%;
+     margin-bottom: 0%;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+}
+.infoEnter{
+    display: flex;
+    flex-direction: row;
+    border: 1px solid #000;
+    border-radius: 5px;
+    margin: 5px;
+}
+.lastview{
+    width: 10%;
+    margin: 5px;
+    align-self: flex-start;
+}
+.nextView{
+    width: 10%;
+    height: max-content;
+    align-self: baseline;
+}
+.lastview button{
+    float: left;
+    
+}
+.nextView button{
+    float: right;
+    margin: 5px;
+}
+.charName{
+    border: none;
+    background: none;
+}
+.showName{
+    /* height: 10%; */
+    margin-bottom: 5px;
+}
+#charLevel{
+    width: 50px;
+}

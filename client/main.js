@@ -1,9 +1,22 @@
 const url = window.location.href.replace(window.location.pathname, "");
 console.log(url);
-var socket = io();
+// var socket = io();
+// var requirejs = require("./requirejs");
+
+// requirejs.config({
+//   //Pass the top-level main.js/index.js require
+//   //function to requirejs so that node modules
+//   //are loaded relative to the top-level JS file.
+//   nodeRequire: require,
+// });
+
+// const axios = requirejs("axios");
 //---------------------------------------------
+// @ts-ignore
 const banner = document.getElementById("banner");
+// @ts-ignore
 const loginBar = document.getElementById("loginBar");
+// @ts-ignore
 const buttonBar = document.getElementById("buttonBar");
 const postsDiv = document.getElementById("posts");
 const modal = document.getElementById("modal");
@@ -15,23 +28,27 @@ let testPost = {
 
 function init() {
   mobileSetup();
-  
-  axios.get("/api/auth").then((res) => {
+  try {
+    axios.get("/api/auth").then((res) => {
       let { data } = res;
       if (data === true) {
-          let usn = window.localStorage.getItem('username') || 'user'
-          loggedIn(usn);
-          console.log("logged in");
+        let usn = window.localStorage.getItem("username") || "user";
+        loggedIn(usn);
+        console.log("logged in");
       } else if (data === false) {
-          notLoggedIN();
-          console.log("not logged in");
+        notLoggedIN();
+        console.log("not logged in");
       } else {
-          console.log(res);
+        console.log(res);
+      }
+    });
+  } catch (error) {
+    console.log(error);
   }
-});
 }
-init()
+init();
 
+// @ts-ignore
 function loginForm(e) {
   let type = e.target.value;
 
@@ -67,16 +84,16 @@ function loginForm(e) {
   submit.textContent = "Submit";
   theForm.appendChild(h3);
   theForm.appendChild(username);
-    let h2 = document.createElement('p');
-    h2.innerHTML = 'Please Enter a Password 8 Characters or Longer<br> that contains special characters!'
-    h2.id = 'registerInfo'
- 
+  let h2 = document.createElement("p");
+  h2.innerHTML =
+    "Please Enter a Password 8 Characters or Longer<br> that contains special characters!";
+  h2.id = "registerInfo";
 
   if (type === "login") {
     theForm.appendChild(password);
     theForm.addEventListener("submit", login);
   } else {
-    theForm.appendChild(h2)
+    theForm.appendChild(h2);
     theForm.appendChild(password);
     theForm.appendChild(passwordConfirm);
     theForm.addEventListener("submit", register);
@@ -89,22 +106,22 @@ function loginForm(e) {
   theForm.classList.toggle("modalLogin", true);
 }
 
-
-
 function login(e) {
   e.preventDefault();
-  let userN = document.getElementById("username").value
-  let passW = document.getElementById("password").value
+  // @ts-ignore
+  let userN = document.getElementById("username").value;
+  // @ts-ignore
+  let passW = document.getElementById("password").value;
   let sendObj = {
     username: userN,
     password: passW,
   };
-  window.localStorage.setItem('username',userN)
+  window.localStorage.setItem("username", userN);
   axios
     .post("/api/login", sendObj)
+    // @ts-ignore
     .then((res) => {
-      window.location.href='/profile.html'
-      
+      window.location.href = "/profile.html";
     })
     .catch((err) => console.log(err));
 }
@@ -112,15 +129,18 @@ function login(e) {
 function register(e) {
   e.preventDefault();
   let sendObj = {
+    // @ts-ignore
     username: document.getElementById("username").value,
+    // @ts-ignore
     password: document.getElementById("password").value,
-    passwordConfirm: document.getElementById("passwordConfirm").value
+    // @ts-ignore
+    passwordConfirm: document.getElementById("passwordConfirm").value,
   };
   axios
     .post("/api/register", sendObj)
     .then((res) => {
-      console.log('REGISTERED');
-      login(e)
+      console.log("REGISTERED");
+      login(e);
       res.status(200).send(res.data);
     })
     .catch((err) => console.log(err));
@@ -142,4 +162,5 @@ function createPost(postObj) {
 }
 createPost(testPost);
 
+// @ts-ignore
 const loginBtn = document.getElementById("loginBtn");

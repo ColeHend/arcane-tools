@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/charCreate.css" />
+    <link rel="stylesheet" href="./character.css" />
+    <title>Character Creation</title>
+  </head>
+  <body>
+    <header>
+      <div id="header">
+        <div id="banner">Archies Arcane Tools</div>
+        <nav>
+          <div id="loginBar"></div>
+          <div id="buttonBar"></div>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <div id="createParent">
+        <!------------------ NameEntry ---------------------------->
+        <div class="infoEnter" id="nameEntry">
+          <div class="lastView">
+            <button class="previousViewDisplay">Previous</button>
+          </div>
+          <div class="createBody">
+            <div>
+              <input
+                class="charNameEntry"
+                type="text"
+                placeholder="Enter your name.."
+              />
+            </div>
+          </div>
+          <div class="nextView">
+            <button class="nextViewDisplay">Next</button>
+          </div>
+        </div>
+        <!--------------------------- stats entry -------------------------->
+        <div class="infoEnter" id="statsEntry">
+          <!-- previous -->
+          <div class="lastView">
+            <button class="previousViewDisplay">Previous</button>
+          </div>
+          <!-- body -->
+          <div class="createBody">
+            <div class="showName">
+              <input readonly class="charName" type="text" value="loading.." />
+            </div>
+            <div>stats</div>
+          </div>
+          <!-- next -->
+          <div class="nextView">
+            <button class="nextViewDisplay">Next</button>
+          </div>
+        </div>
+        <!---------------------------- Race entry --------------------->
+        <div class="infoEnter" id="raceEntry">
+          <!-- previous -->
+          <div class="lastView">
+            <button class="previousViewDisplay">Previous</button>
+          </div>
+          <!-- body -->
+          <div class="createBody">
+            <div class="showName">
+              <input readonly class="charName" type="text" value="loading.." />
+            </div>
+            <div>race</div>
+          </div>
+          <!-- next -->
+          <div class="nextView">
+            <button class="nextViewDisplay">Next</button>
+          </div>
+        </div>
+        <!----------------- class & level entry ----------------->
+        <div class="infoEnter" id="classEntry">
+          <!-- previous -->
+          <div class="lastView">
+            <button class="previousViewDisplay">Previous</button>
+          </div>
+          <!-- body -->
+          <div class="createBody">
+            <div class="showName">
+              <input readonly class="charName" type="text" value="loading.." />
+            </div>
+            <div>
+              <select name="chooseClass" id="classSelector"></select>
+              <input
+                min="1"
+                max="20"
+                value="1"
+                type="number"
+                name="charLevel"
+                id="charLevel"
+              />
+            </div>
+            <div class="classInfo">class&level</div>
+          </div>
+          <!-- next -->
+          <div class="nextView">
+            <button class="nextViewDisplay">Next</button>
+          </div>
+        </div>
+        <!--------------------------- background entry -------------------------->
+        <div class="infoEnter" id="backgroundEntry">
+          <!-- previous -->
+          <div class="lastView">
+            <button class="previousViewDisplay">Previous</button>
+          </div>
+          <!-- body -->
+          <div class="createBody">
+            <div class="showName">
+              <input readonly class="charName" type="text" value="loading.." />
+            </div>
+            <div>background</div>
+          </div>
+          <!-- next -->
+          <div class="nextView">
+            <button class="nextViewDisplay">Next</button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="character.js"></script>
+  </body>
+</html>
